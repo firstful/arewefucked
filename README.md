@@ -15,7 +15,7 @@ Two Gitea Actions:
 
 deploy-site.yml     on push to public/**, src/normalize.js, scripts/site.mjs
   → npm run build                     # UI only → dist/ (no status.json)
-  → swa deploy ./dist                 # Azure Static Web Apps
+  → Azure/static-web-apps-deploy@v1   # Azure Static Web Apps
 
 publish-status.yml  every 15 min (+ manual)
   → npm run publish                   # fetch all feeds → .cache/status.json
