@@ -1,4 +1,4 @@
-import { SERVICES } from '../src/catalog.js';
+import { SERVICES, WEIGHTS } from '../src/catalog.js';
 import { normalize } from '../src/normalize.js';
 
 const cache = new Map();
@@ -12,7 +12,9 @@ async function fetchSource(url) {
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const text = await response.text();
-    return /json/i.test(response.headers.get('content-type') || '') ? JSON.parse(text) : text;
+    const type = response.headers.get('content-type') || '';
+    if (/json|javascript/i.test(type) || /^[{[]/.test(text.trim())) return JSON.parse(text);
+    return text;
   })().catch((error) => ({ __error: String(error?.message || error) }));
   cache.set(url, task);
   return task;
@@ -22,9 +24,10 @@ export async function collect() {
   cache.clear();
   const generatedAt = new Date().toISOString();
   const services = await Promise.all(SERVICES.map(async (service) => {
+    const weight = WEIGHTS[service.id] || 'M';
     const source = service.source;
     if (!source.url) {
-      return { ...service, status: normalize(source, null), fetchedAt: generatedAt, feedOk: false };
+      return { ...service, weight, status: normalize(source, null), fetchedAt: generatedAt, feedOk: false };
     }
     const raw = await fetchSource(source.url);
     const feedOk = !raw?.__error;
@@ -34,6 +37,7 @@ export async function collect() {
     return {
       id: service.id,
       name: service.name,
+      weight,
       category: service.category,
       url: service.url,
       source: { type: source.type, filter: source.filter || null, url: source.url },
@@ -42,5 +46,5 @@ export async function collect() {
       feedOk,
     };
   }));
-  return { generatedAt, services };
+  return { generatedAt, timestamp: generatedAt, services };
 }

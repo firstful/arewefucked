@@ -1,9 +1,11 @@
 {
-  "generatedAt": "2026-11-20T23:09:21.421Z",
+  "generatedAt": "2026-11-20T23:18:08.442Z",
+  "timestamp": "2026-11-20T23:18:08.442Z",
   "services": [
     {
       "id": "azure",
       "name": "Microsoft Azure",
+      "weight": "XXL",
       "category": "Cloud Providers",
       "url": "https://status.azure.com/en-us/status",
       "source": {
@@ -16,12 +18,13 @@
         "detail": "Azure only yelling about widespread stuff anyway.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.780Z",
+      "fetchedAt": "2026-11-20T23:18:08.862Z",
       "feedOk": true
     },
     {
       "id": "gcp",
       "name": "Google Cloud Platform",
+      "weight": "XXL",
       "category": "Cloud Providers",
       "url": "https://status.cloud.google.com/",
       "source": {
@@ -34,12 +37,13 @@
         "detail": "GCP is giving nothing to gossip about.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.838Z",
+      "fetchedAt": "2026-11-20T23:18:08.757Z",
       "feedOk": true
     },
     {
       "id": "aws",
       "name": "Amazon Web Services",
+      "weight": "XXL",
       "category": "Cloud Providers",
       "url": "https://health.aws.amazon.com/health/status",
       "source": {
@@ -52,12 +56,13 @@
         "detail": "No fresh AWS drama in the feed.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.917Z",
+      "fetchedAt": "2026-11-20T23:18:08.815Z",
       "feedOk": true
     },
     {
       "id": "digitalocean",
       "name": "DigitalOcean",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://status.digitalocean.com/",
       "source": {
@@ -70,12 +75,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.014Z",
+      "fetchedAt": "2026-11-20T23:18:08.892Z",
       "feedOk": true
     },
     {
       "id": "hetzner",
       "name": "Hetzner",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://status.hetzner.com/",
       "source": {
@@ -109,12 +115,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:22.556Z",
+      "fetchedAt": "2026-11-20T23:18:09.136Z",
       "feedOk": true
     },
     {
       "id": "fly",
       "name": "Fly.io",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://status.flyio.net/",
       "source": {
@@ -127,12 +134,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.124Z",
+      "fetchedAt": "2026-11-20T23:18:08.823Z",
       "feedOk": true
     },
     {
       "id": "render",
       "name": "Render",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://status.render.com/",
       "source": {
@@ -145,12 +153,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.264Z",
+      "fetchedAt": "2026-11-20T23:18:08.711Z",
       "feedOk": true
     },
     {
       "id": "railway",
       "name": "Railway",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://railway.statuspage.io/",
       "source": {
@@ -163,12 +172,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.283Z",
+      "fetchedAt": "2026-11-20T23:18:08.709Z",
       "feedOk": true
     },
     {
       "id": "linode",
       "name": "Linode",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://status.linode.com/",
       "source": {
@@ -190,12 +200,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:22.269Z",
+      "fetchedAt": "2026-11-20T23:18:08.714Z",
       "feedOk": true
     },
     {
       "id": "vercel",
       "name": "Vercel",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://www.vercel-status.com/",
       "source": {
@@ -208,12 +219,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.351Z",
+      "fetchedAt": "2026-11-20T23:18:08.712Z",
       "feedOk": true
     },
     {
       "id": "netlify",
       "name": "Netlify",
+      "weight": "XL",
       "category": "Cloud Providers",
       "url": "https://www.netlifystatus.com/",
       "source": {
@@ -226,12 +238,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.818Z",
+      "fetchedAt": "2026-11-20T23:18:09.426Z",
       "feedOk": true
     },
     {
       "id": "cloudflare-host",
       "name": "Cloudflare",
+      "weight": "XXL",
       "category": "Cloud Providers",
       "url": "https://www.cloudflarestatus.com/",
       "source": {
@@ -253,12 +266,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:22.358Z",
+      "fetchedAt": "2026-11-20T23:18:08.809Z",
       "feedOk": true
     },
     {
       "id": "github-actions",
       "name": "GitHub Actions",
+      "weight": "XL",
       "category": "CI/CD",
       "url": "https://www.githubstatus.com/",
       "source": {
@@ -271,7 +285,7 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.517Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
@@ -282,17 +296,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "S",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "circleci",
       "name": "CircleCI",
+      "weight": "L",
       "category": "CI/CD",
       "url": "https://status.circleci.com/",
       "source": {
@@ -310,7 +326,7 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:22.558Z",
+      "fetchedAt": "2026-11-20T23:18:08.712Z",
       "feedOk": true
     },
     {
@@ -321,12 +337,13 @@
       "source": {
         "type": "none"
       },
+      "weight": "S",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
@@ -337,17 +354,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "S",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "github",
       "name": "GitHub",
+      "weight": "XL",
       "category": "Source Code Repositories",
       "url": "https://www.githubstatus.com/",
       "source": {
@@ -360,7 +379,7 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.517Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
@@ -371,17 +390,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "XL",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "bitbucket",
       "name": "Bitbucket",
+      "weight": "XL",
       "category": "Source Code Repositories",
       "url": "https://bitbucket.status.atlassian.com/",
       "source": {
@@ -394,12 +415,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.623Z",
+      "fetchedAt": "2026-11-20T23:18:08.708Z",
       "feedOk": true
     },
     {
       "id": "ghe",
       "name": "GitHub Enterprise",
+      "weight": "M",
       "category": "Source Code Repositories",
       "url": "https://www.githubstatus.com/",
       "source": {
@@ -412,12 +434,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.517Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
       "id": "mongodb",
       "name": "MongoDB Atlas",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://status.mongodb.com/",
       "source": {
@@ -430,12 +453,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.704Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
       "id": "aws-rds",
       "name": "AWS RDS",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://health.aws.amazon.com/health/status",
       "source": {
@@ -448,12 +472,13 @@
         "detail": "No fresh AWS drama in the feed.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.918Z",
+      "fetchedAt": "2026-11-20T23:18:08.815Z",
       "feedOk": true
     },
     {
       "id": "gcp-sql",
       "name": "Google Cloud SQL for PostgreSQL",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://status.cloud.google.com/",
       "source": {
@@ -466,12 +491,13 @@
         "detail": "GCP is giving nothing to gossip about.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.838Z",
+      "fetchedAt": "2026-11-20T23:18:08.757Z",
       "feedOk": true
     },
     {
       "id": "azure-sql",
       "name": "Azure SQL Managed Instance",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://status.azure.com/en-us/status",
       "source": {
@@ -484,12 +510,13 @@
         "detail": "Azure only yelling about widespread stuff anyway.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.780Z",
+      "fetchedAt": "2026-11-20T23:18:08.862Z",
       "feedOk": true
     },
     {
       "id": "planetscale",
       "name": "PlanetScale",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://planetscale.statuspage.io/",
       "source": {
@@ -502,12 +529,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.745Z",
+      "fetchedAt": "2026-11-20T23:18:08.709Z",
       "feedOk": true
     },
     {
       "id": "supabase",
       "name": "Supabase",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://status.supabase.com/",
       "source": {
@@ -520,12 +548,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.735Z",
+      "fetchedAt": "2026-11-20T23:18:08.980Z",
       "feedOk": true
     },
     {
       "id": "render-pg",
       "name": "Render PostgreSQL",
+      "weight": "L",
       "category": "Hosted Databases",
       "url": "https://status.render.com/",
       "source": {
@@ -538,12 +567,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.264Z",
+      "fetchedAt": "2026-11-20T23:18:08.711Z",
       "feedOk": true
     },
     {
       "id": "cf-dns",
       "name": "Cloudflare DNS",
+      "weight": "XXL",
       "category": "CDN and DNS",
       "url": "https://www.cloudflarestatus.com/",
       "source": {
@@ -556,12 +586,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.358Z",
+      "fetchedAt": "2026-11-20T23:18:08.809Z",
       "feedOk": true
     },
     {
       "id": "akamai",
       "name": "Akamai",
+      "weight": "XL",
       "category": "CDN and DNS",
       "url": "https://www.akamaistatus.com/",
       "source": {
@@ -591,12 +622,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:23.692Z",
+      "fetchedAt": "2026-11-20T23:18:09.411Z",
       "feedOk": true
     },
     {
       "id": "cf-cdn",
       "name": "Cloudflare CDN",
+      "weight": "XXL",
       "category": "CDN and DNS",
       "url": "https://www.cloudflarestatus.com/",
       "source": {
@@ -609,7 +641,7 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.358Z",
+      "fetchedAt": "2026-11-20T23:18:08.809Z",
       "feedOk": true
     },
     {
@@ -620,17 +652,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "XL",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "cloudfront",
       "name": "AWS CloudFront",
+      "weight": "XL",
       "category": "CDN and DNS",
       "url": "https://health.aws.amazon.com/health/status",
       "source": {
@@ -643,12 +677,13 @@
         "detail": "No fresh AWS drama in the feed.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.918Z",
+      "fetchedAt": "2026-11-20T23:18:08.815Z",
       "feedOk": true
     },
     {
       "id": "route53",
       "name": "AWS Route 53",
+      "weight": "XL",
       "category": "CDN and DNS",
       "url": "https://health.aws.amazon.com/health/status",
       "source": {
@@ -661,12 +696,13 @@
         "detail": "No fresh AWS drama in the feed.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.918Z",
+      "fetchedAt": "2026-11-20T23:18:08.816Z",
       "feedOk": true
     },
     {
       "id": "gcp-dns",
       "name": "Google Cloud DNS",
+      "weight": "M",
       "category": "CDN and DNS",
       "url": "https://status.cloud.google.com/",
       "source": {
@@ -679,12 +715,13 @@
         "detail": "GCP is giving nothing to gossip about.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.838Z",
+      "fetchedAt": "2026-11-20T23:18:08.757Z",
       "feedOk": true
     },
     {
       "id": "cursor",
       "name": "Cursor",
+      "weight": "M",
       "category": "LLMs and AI Assistants",
       "url": "https://status.cursor.com/",
       "source": {
@@ -702,12 +739,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:23.608Z",
+      "fetchedAt": "2026-11-20T23:18:09.221Z",
       "feedOk": true
     },
     {
       "id": "claude",
       "name": "Claude",
+      "weight": "M",
       "category": "LLMs and AI Assistants",
       "url": "https://status.claude.com/",
       "source": {
@@ -720,12 +758,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.526Z",
+      "fetchedAt": "2026-11-20T23:18:09.141Z",
       "feedOk": true
     },
     {
       "id": "copilot",
       "name": "Copilot",
+      "weight": "M",
       "category": "LLMs and AI Assistants",
       "url": "https://www.githubstatus.com/",
       "source": {
@@ -738,7 +777,7 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.517Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
@@ -749,12 +788,13 @@
       "source": {
         "type": "none"
       },
+      "weight": "L",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
@@ -765,12 +805,13 @@
       "source": {
         "type": "none"
       },
+      "weight": "XL",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
@@ -781,17 +822,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "L",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "newrelic",
       "name": "New Relic",
+      "weight": "XL",
       "category": "Observability and Monitoring",
       "url": "https://status.newrelic.com/",
       "source": {
@@ -804,7 +847,7 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.009Z",
+      "fetchedAt": "2026-11-20T23:18:08.801Z",
       "feedOk": true
     },
     {
@@ -815,17 +858,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "XL",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "grafana",
       "name": "Grafana Cloud",
+      "weight": "XL",
       "category": "Observability and Monitoring",
       "url": "https://status.grafana.com/",
       "source": {
@@ -838,12 +883,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.123Z",
+      "fetchedAt": "2026-11-20T23:18:08.812Z",
       "feedOk": true
     },
     {
       "id": "honeycomb",
       "name": "Honeycomb",
+      "weight": "L",
       "category": "Observability and Monitoring",
       "url": "https://status.honeycomb.io/",
       "source": {
@@ -856,7 +902,7 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.463Z",
+      "fetchedAt": "2026-11-20T23:18:08.785Z",
       "feedOk": true
     },
     {
@@ -867,12 +913,13 @@
       "source": {
         "type": "none"
       },
+      "weight": "S",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
@@ -883,17 +930,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "XL",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "gcr",
       "name": "Google Container Registry",
+      "weight": "L",
       "category": "Artifact Repositories",
       "url": "https://status.cloud.google.com/",
       "source": {
@@ -906,12 +955,13 @@
         "detail": "GCP is giving nothing to gossip about.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.838Z",
+      "fetchedAt": "2026-11-20T23:18:08.757Z",
       "feedOk": true
     },
     {
       "id": "quay",
       "name": "Red Hat Quay",
+      "weight": "L",
       "category": "Artifact Repositories",
       "url": "https://status.redhat.com/",
       "source": {
@@ -924,12 +974,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.302Z",
+      "fetchedAt": "2026-11-20T23:18:08.798Z",
       "feedOk": true
     },
     {
       "id": "ghcr",
       "name": "GitHub Container Registry",
+      "weight": "L",
       "category": "Artifact Repositories",
       "url": "https://www.githubstatus.com/",
       "source": {
@@ -942,12 +993,13 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:22.517Z",
+      "fetchedAt": "2026-11-20T23:18:08.710Z",
       "feedOk": true
     },
     {
       "id": "npm",
       "name": "npm",
+      "weight": "XL",
       "category": "Artifact Repositories",
       "url": "https://status.npmjs.org/",
       "source": {
@@ -960,12 +1012,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.401Z",
+      "fetchedAt": "2026-11-20T23:18:08.818Z",
       "feedOk": true
     },
     {
       "id": "sendgrid",
       "name": "SendGrid",
+      "weight": "XL",
       "category": "SMTP Providers",
       "url": "https://status.twilio.com/",
       "source": {
@@ -978,7 +1031,7 @@
         "detail": "Quiet in this lane.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.747Z",
+      "fetchedAt": "2026-11-20T23:18:09.436Z",
       "feedOk": true
     },
     {
@@ -989,17 +1042,19 @@
       "source": {
         "type": "none"
       },
+      "weight": "S",
       "status": {
         "state": "unknown",
         "detail": "No public status feed we can read.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:21.421Z",
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
       "feedOk": false
     },
     {
       "id": "mailersend",
       "name": "MailerSend",
+      "weight": "L",
       "category": "SMTP Providers",
       "url": "https://status.mailersend.com/",
       "source": {
@@ -1012,12 +1067,13 @@
         "detail": "All Systems Operational",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.489Z",
+      "fetchedAt": "2026-11-20T23:18:09.244Z",
       "feedOk": true
     },
     {
       "id": "stripe",
       "name": "Stripe",
+      "weight": "XL",
       "category": "Payment Gateways",
       "url": "https://status.stripe.com/",
       "source": {
@@ -1051,12 +1107,13 @@
           }
         ]
       },
-      "fetchedAt": "2026-11-20T23:09:23.851Z",
+      "fetchedAt": "2026-11-20T23:18:09.290Z",
       "feedOk": true
     },
     {
       "id": "paypal",
       "name": "PayPal",
+      "weight": "XL",
       "category": "Payment Gateways",
       "url": "https://www.paypal-status.com/product/production",
       "source": {
@@ -1069,12 +1126,13 @@
         "detail": "No active incidents on the wire.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:23.689Z",
+      "fetchedAt": "2026-11-20T23:18:09.339Z",
       "feedOk": true
     },
     {
       "id": "dodo",
       "name": "DodoPayments",
+      "weight": "S",
       "category": "Payment Gateways",
       "url": "https://status.dodopayments.com/",
       "source": {
@@ -1087,8 +1145,752 @@
         "detail": "Dodo says everything is fine.",
         "incidents": []
       },
-      "fetchedAt": "2026-11-20T23:09:24.173Z",
+      "fetchedAt": "2026-11-20T23:18:09.366Z",
       "feedOk": true
+    },
+    {
+      "id": "acquia",
+      "name": "Acquia",
+      "weight": "S",
+      "category": "Other Status Pages",
+      "url": "https://status.acquia.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.acquia.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "cooked",
+        "detail": "Acquia has detected Code repository and deployment issues impacting subset of applications",
+        "incidents": [
+          {
+            "title": "Acquia has detected Code repository and deployment issues impacting subset of applications",
+            "url": "https://stspg.io/dyr61ppn5l54"
+          },
+          {
+            "title": "Multiple Sites Down Hosted In The US-West-2 AWS region",
+            "url": "https://stspg.io/wzlpvp21067t"
+          }
+        ]
+      },
+      "fetchedAt": "2026-11-20T23:18:09.065Z",
+      "feedOk": true
+    },
+    {
+      "id": "activecampaign",
+      "name": "ActiveCampaign",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.activecampaign.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.activecampaign.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.069Z",
+      "feedOk": true
+    },
+    {
+      "id": "adobe",
+      "name": "Adobe",
+      "category": "Other Status Pages",
+      "url": "https://status.adobe.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "L",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "apple",
+      "name": "Apple System Status",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://www.apple.com/support/systemstatus/",
+      "source": {
+        "type": "apple",
+        "filter": null,
+        "url": "https://www.apple.com/support/systemstatus/data/system_status_en_US.js"
+      },
+      "status": {
+        "state": "sus",
+        "detail": "Users would have experienced issues with Stocks.",
+        "incidents": [
+          {
+            "title": "Users would have experienced issues with Stocks.",
+            "url": ""
+          }
+        ]
+      },
+      "fetchedAt": "2026-11-20T23:18:09.204Z",
+      "feedOk": true
+    },
+    {
+      "id": "automattic",
+      "name": "Automattic",
+      "category": "Other Status Pages",
+      "url": "https://status.wordpress.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "M",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "beanstalk",
+      "name": "Beanstalk",
+      "category": "Other Status Pages",
+      "url": "https://www.beanstalkapp.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "blackboard",
+      "name": "Blackboard",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.blackboard.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.blackboard.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "sus",
+        "detail": "Blackboard LMS: Discussion Forum or other Assessment Visible in Course with Inherited Release Conditions",
+        "incidents": [
+          {
+            "title": "Blackboard LMS: Discussion Forum or other Assessment Visible in Course with Inherited Release Conditions",
+            "url": "https://stspg.io/mvql9yb2vm4b"
+          }
+        ]
+      },
+      "fetchedAt": "2026-11-20T23:18:09.404Z",
+      "feedOk": true
+    },
+    {
+      "id": "box",
+      "name": "Box",
+      "weight": "XL",
+      "category": "Other Status Pages",
+      "url": "https://status.box.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.box.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.110Z",
+      "feedOk": true
+    },
+    {
+      "id": "sharefile",
+      "name": "Citrix ShareFile",
+      "weight": "M",
+      "category": "Other Status Pages",
+      "url": "https://status.sharefile.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.sharefile.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.107Z",
+      "feedOk": true
+    },
+    {
+      "id": "dediserve",
+      "name": "dediserve",
+      "category": "Other Status Pages",
+      "url": "https://status.dediserve.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "fedora",
+      "name": "Fedora Infrastructure",
+      "category": "Other Status Pages",
+      "url": "https://status.fedoraproject.org/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "gandi",
+      "name": "Gandi.net",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.gandi.net/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.gandi.net/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.125Z",
+      "feedOk": true
+    },
+    {
+      "id": "garmin",
+      "name": "Garmin Connect",
+      "category": "Other Status Pages",
+      "url": "https://connect.garmin.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "googleapps",
+      "name": "Google Workspace Status",
+      "category": "Other Status Pages",
+      "url": "https://www.google.com/appsstatus/dashboard/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "goto",
+      "name": "Citrix GoToMeeting",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.goto.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.goto.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.110Z",
+      "feedOk": true
+    },
+    {
+      "id": "heroku",
+      "name": "Heroku",
+      "weight": "XL",
+      "category": "Other Status Pages",
+      "url": "https://status.heroku.com/",
+      "source": {
+        "type": "heroku",
+        "filter": null,
+        "url": "https://status.heroku.com/api/v3/current-status"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "Production: green",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.104Z",
+      "feedOk": true
+    },
+    {
+      "id": "hirez",
+      "name": "HiRez Studios",
+      "category": "Other Status Pages",
+      "url": "https://status.hirezstudios.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "hipchat",
+      "name": "HipChat",
+      "category": "Other Status Pages",
+      "url": "https://www.hipchat.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "intercom",
+      "name": "Intercom",
+      "category": "Other Status Pages",
+      "url": "https://status.intercom.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "L",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "kickstarter",
+      "name": "Kickstarter",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.kickstarter.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.kickstarter.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.106Z",
+      "feedOk": true
+    },
+    {
+      "id": "lol",
+      "name": "League of Legends",
+      "category": "Other Status Pages",
+      "url": "https://status.leagueoflegends.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "mediatemple",
+      "name": "Media Temple",
+      "category": "Other Status Pages",
+      "url": "https://mediatemple.net/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "xbox",
+      "name": "Xbox Live",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://support.xbox.com/en-US/xbox-live-status",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://xboxlive.statuspage.io/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.105Z",
+      "feedOk": true
+    },
+    {
+      "id": "nest",
+      "name": "Nest",
+      "category": "Other Status Pages",
+      "url": "https://status.nest.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "ovh",
+      "name": "OVH",
+      "category": "Other Status Pages",
+      "url": "https://status.ovhcloud.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "L",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "parse",
+      "name": "Parse",
+      "category": "Other Status Pages",
+      "url": "https://parseplatform.org/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "pivotaltracker",
+      "name": "Pivotal Tracker",
+      "category": "Other Status Pages",
+      "url": "https://www.pivotaltracker.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "pivotalws",
+      "name": "Pivotal Web Services",
+      "category": "Other Status Pages",
+      "url": "https://run.pivotal.io/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "playstation",
+      "name": "PlayStation Network",
+      "category": "Other Status Pages",
+      "url": "https://status.playstation.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "rackspace",
+      "name": "Rackspace",
+      "category": "Other Status Pages",
+      "url": "https://status.rackspace.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "L",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "weight": "XL",
+      "category": "Other Status Pages",
+      "url": "https://www.shopifystatus.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.shopify.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.375Z",
+      "feedOk": true
+    },
+    {
+      "id": "site5",
+      "name": "site5",
+      "category": "Other Status Pages",
+      "url": "https://www.site5.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "slack",
+      "name": "Slack",
+      "category": "Other Status Pages",
+      "url": "https://slack-status.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "XL",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "statuspage-meta",
+      "name": "Statuspage.io Meta",
+      "category": "Other Status Pages",
+      "url": "https://status.statuspage.io/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "sumologic",
+      "name": "Sumo Logic",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.sumologic.com/",
+      "source": {
+        "type": "statuspage",
+        "filter": null,
+        "url": "https://status.sumologic.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All Systems Operational",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.158Z",
+      "feedOk": true
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "category": "Other Status Pages",
+      "url": "https://swift.org/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "twitterdev",
+      "name": "Twitter for Developers",
+      "category": "Other Status Pages",
+      "url": "https://developer.x.com/en/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "edgecast",
+      "name": "Verizon Edgecast",
+      "category": "Other Status Pages",
+      "url": "https://status.edgecast.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "voxmedia",
+      "name": "Vox Media",
+      "category": "Other Status Pages",
+      "url": "https://status.voxmedia.com/",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
+    },
+    {
+      "id": "wistia",
+      "name": "Wistia",
+      "weight": "L",
+      "category": "Other Status Pages",
+      "url": "https://status.wistia.com/",
+      "source": {
+        "type": "simple",
+        "filter": null,
+        "url": "https://status.wistia.com/api/v2/summary.json"
+      },
+      "status": {
+        "state": "ok",
+        "detail": "All systems up.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:09.157Z",
+      "feedOk": true
+    },
+    {
+      "id": "wow",
+      "name": "World of WarCraft Realms",
+      "category": "Other Status Pages",
+      "url": "https://worldofwarcraft.blizzard.com/en-us/game/status",
+      "source": {
+        "type": "none"
+      },
+      "weight": "S",
+      "status": {
+        "state": "unknown",
+        "detail": "No public status feed we can read.",
+        "incidents": []
+      },
+      "fetchedAt": "2026-11-20T23:18:08.442Z",
+      "feedOk": false
     }
   ]
 }

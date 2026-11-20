@@ -189,6 +189,27 @@ function dodo(raw) {
   return result(state ? 'sus' : 'unknown', state || 'Could not read the status feed.');
 }
 
+function apple(raw) {
+  if (!Array.isArray(raw?.services)) return result('unknown', 'Could not read the Apple feed.');
+  const bad = raw.services.filter((s) => (s.events || []).length);
+  if (!bad.length) return result('ok', 'All Apple services normal.');
+  const incidents = bad.flatMap((s) => s.events.map((e) => ({ title: e.headline || e.message || s.serviceName })));
+  return result('sus', incidents[0].title, incidents);
+}
+
+function heroku(raw) {
+  const colors = Object.values(raw?.status || {}).map((v) => String(v).toLowerCase());
+  const state = colors.includes('red') ? 'cooked' : colors.includes('yellow') ? 'sus' : 'ok';
+  const incidents = (raw?.issues || []).map((i) => ({ title: i.title || i.message || 'Heroku issue' }));
+  return result(state, incidents[0]?.title || `Production: ${raw?.status?.Production || 'unknown'}`, incidents);
+}
+
+function simple(raw) {
+  const status = String(raw?.page?.status || '').toUpperCase();
+  if (status === 'UP' || status === 'OK') return result('ok', 'All systems up.');
+  return result(status ? 'sus' : 'unknown', status || 'Could not read the status feed.');
+}
+
 export function normalize(source, raw, now = Date.now()) {
   try {
     switch (source.type) {
@@ -200,6 +221,9 @@ export function normalize(source, raw, now = Date.now()) {
       case 'atom': return feed(raw, source, now, 'atom');
       case 'rss': return feed(raw, source, now, 'rss');
       case 'dodo': return dodo(raw);
+      case 'apple': return apple(raw);
+      case 'heroku': return heroku(raw);
+      case 'simple': return simple(raw);
       default: return result('unknown', 'No public status feed we can read.');
     }
   } catch (error) {

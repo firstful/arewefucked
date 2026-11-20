@@ -1,7 +1,6 @@
 import { STATES } from './normalize.js';
 
 const STATUS_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
-const RANK = { ok: 0, maintenance: 1, sus: 2, cooked: 3, meltdown: 4, unknown: 0 };
 const LEVELS = [
   { n: 5, caption: 'NOMINAL', label: 'NOMINAL', color: '#5ee7a0', verdict: 'Nothing is on fire. For once.' },
   { n: 4, caption: 'ELEVATED', label: 'PLANNED / UNREADABLE', color: '#9aa7ff', verdict: 'Planned work or missing data. Nothing to panic about.' },
@@ -9,7 +8,28 @@ const LEVELS = [
   { n: 2, caption: 'CRITICAL', label: 'CRITICAL', color: '#ff9f5a', verdict: 'Yes, this is as bad as it looks.' },
   { n: 1, caption: 'MELTDOWN', label: 'MELTDOWN', color: '#ff5d7a', verdict: 'Several things are very, very not fine.' },
 ];
-const LEVEL_FOR = { ok: 5, maintenance: 4, unknown: 4, sus: 3, cooked: 2, meltdown: 1 };
+const WEIGHT_SCORE = { S: 1, M: 2, L: 3, XL: 4, XXL: 5 };
+const IMPACT = { ok: 0, maintenance: 0.5, sus: 1, cooked: 2, meltdown: 3, unknown: 0 };
+
+function threat(services) {
+  const score = services.reduce((sum, s) => sum + (IMPACT[s.status.state] || 0) * (WEIGHT_SCORE[s.weight] || 2), 0);
+  const major = services.some((s) => s.status.state === 'meltdown' && ['XL', 'XXL'].includes(s.weight));
+  const critical = services.some((s) => s.status.state === 'cooked' && ['XL', 'XXL'].includes(s.weight));
+  const n = score >= 40 || major ? 1 : score >= 12 || critical ? 2 : score >= 4 ? 3 : score > 0 ? 4 : 5;
+  return { score, level: LEVELS.find((l) => l.n === n) };
+}
+
+function humanize(iso) {
+  const seconds = Math.max(0, Math.floor((Date.now() - Date.parse(iso || '')) / 1000));
+  if (!Number.isFinite(seconds)) return 'unknown';
+  if (seconds < 45) return 'just now';
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
 const QUIPS = {
   ok: ['quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.'],
   maintenance: ['planned downtime.', 'scheduled. not a surprise.', 'maintenance window. fine.'],
@@ -20,6 +40,7 @@ const QUIPS = {
 };
 
 let data = null;
+let stale = false;
 let loading = false;
 let query = '';
 let category = 'All';
@@ -33,10 +54,6 @@ const quip = (service) => {
   return options[hash(service.id + service.status.state) % options.length];
 };
 
-function worstState(services) {
-  return services.map((s) => s.status.state).sort((a, b) => (RANK[b] || 0) - (RANK[a] || 0))[0] || 'unknown';
-}
-
 function relativeTime(iso) {
   const seconds = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 1000));
   if (seconds < 60) return `${seconds}s ago`;
@@ -45,10 +62,13 @@ function relativeTime(iso) {
   return `${Math.round(seconds / 86400)}d ago`;
 }
 
+function updateRefreshAge() {
+  if (data && !stale) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
+}
+
 function renderHero() {
   const services = data.services;
-  const worst = worstState(services);
-  const level = LEVELS.find((l) => l.n === LEVEL_FOR[worst]) || LEVELS[1];
+  const { score, level } = threat(services);
   const counts = services.reduce((acc, s) => {
     acc[s.status.state] = (acc[s.status.state] || 0) + 1;
     return acc;
@@ -61,7 +81,8 @@ function renderHero() {
       <b>${l.n}</b><small>${l.caption}</small>
     </div>
   `).join('');
-  el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} critical · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable.`;
+  el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} critical · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
+  el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
 }
 
 function renderTicker() {
@@ -100,7 +121,7 @@ function renderSections() {
       <div class="grid">${items.map((s) => {
         const meta = STATES[s.status.state] || STATES.unknown;
         return `<a class="card" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">
-          <div class="card-top"><h3>${esc(s.name)}</h3><span class="pill">${esc(meta.label)}</span></div>
+          <div class="card-top"><span class="card-name"><span class="weight" title="impact weight ${esc(s.weight)}">${esc(s.weight)}</span><h3>${esc(s.name)}</h3></span><span class="pill">${esc(meta.label)}</span></div>
           <p class="quip">${esc(quip(s))}</p>
           <p class="detail">${esc(s.status.detail || 'No detail available.')}</p>
           <div class="card-foot"><span class="source-tag">SNAPSHOT · ${esc(relativeTime(s.fetchedAt))}</span><span>status page ↗</span></div>
@@ -136,15 +157,17 @@ async function loadSnapshot() {
     const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     data = await response.json();
-    el('scan-time').textContent = `snapshot ${new Date(data.generatedAt).toLocaleTimeString()}`;
+    stale = false;
     renderAll();
   } catch (error) {
     if (!data) {
-      el('verdict').textContent = 'we broke the meter 💀';
+      el('verdict').textContent = 'No snapshot available.';
       el('hero-sub').textContent = `Could not load the published JSON: ${error.message}`;
       el('ticker-text').textContent = 'Check STATUS_JSON_URL in index.html.';
+      el('last-refresh').textContent = 'Last refresh: unavailable';
     } else {
-      el('scan-time').textContent = 'snapshot unavailable · showing last copy';
+      stale = true;
+      el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)} (stale copy)`;
     }
   } finally {
     loading = false;
@@ -173,5 +196,6 @@ el('state-filters').addEventListener('click', (event) => {
   renderSections();
 });
 setInterval(loadSnapshot, 120000);
+setInterval(updateRefreshAge, 30000);
 
 loadSnapshot();

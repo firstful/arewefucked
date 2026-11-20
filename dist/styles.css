@@ -58,7 +58,6 @@ button, input { font: inherit; }
 .glitch::before { color: #3ef2ff; animation: glitch-top 3.4s steps(1) infinite; }
 .glitch::after { color: var(--pink); animation: glitch-bottom 3.4s steps(1) infinite; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
-.scan-time { color: var(--muted); font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
 .refresh {
   background: var(--panel-2);
   color: var(--text);
@@ -107,6 +106,7 @@ h1 {
 .level small { display: block; margin-top: 6px; font: 700 9px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; white-space: nowrap; }
 .level.on { opacity: 1; border-color: var(--level-color); background: color-mix(in srgb, var(--level-color) 14%, #0d1017); color: var(--level-color); box-shadow: inset 0 0 24px color-mix(in srgb, var(--level-color) 12%, transparent); }
 .summary { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.last-refresh { margin: 6px 0 0; color: #677082; font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .ticker { overflow: hidden; border-block: 1px solid var(--line); background: var(--panel); margin-top: 28px; }
 .ticker-text { padding: 11px 0; white-space: nowrap; color: var(--muted); font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -159,7 +159,9 @@ h1 {
 }
 .card:hover { transform: translateY(-2px); border-color: var(--state-color, var(--pink)); background: var(--panel-2); }
 .card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 3px; border-radius: 16px 0 0 16px; background: var(--state-color, var(--line)); }
-.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.card-name { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.weight { flex: none; font: 800 9px ui-monospace, monospace; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 2px 4px; }
 .card h3 { margin: 0; font-size: 14px; letter-spacing: -.01em; }
 .pill { font: 800 9px ui-monospace, monospace; letter-spacing: .08em; padding: 4px 7px; border-radius: 999px; color: var(--state-color); border: 1px solid var(--state-color); white-space: nowrap; }
 .quip { margin: 0; font-size: 13px; line-height: 1.45; color: var(--text); }
@@ -199,6 +201,5 @@ footer strong { color: var(--text); }
   .level small { font-size: 7px; letter-spacing: .04em; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .card { min-height: 150px; padding: 12px; }
-  .scan-time { display: none; }
   h1 { font-size: clamp(40px, 13vw, 64px); }
 }

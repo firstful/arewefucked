@@ -1,9 +1,9 @@
 # arewefucked.xyz
 
-Real status feeds, unserious commentary. A static site that reads **one JSON file**
+Real status feeds, blunt commentary. A static site that reads **one JSON file**
 published by a job every 15 minutes. No per-visitor API calls, no backend.
 
-**The humor is commentary, not attribution.** "SUS" means a vendor's own status
+**The humor is commentary, not attribution.** "DEGRADED" means a vendor's own status
 feed reported a problem — not that a cyber attack was confirmed. Every card links
 to the real status page.
 
@@ -18,7 +18,14 @@ cron / Actions (every 15m)
 ```
 
 The site polls the JSON every 2 minutes (and on **↻ refresh**). If the blob has
-not changed, nothing visually changes.
+not changed, nothing visually changes. The JSON carries `generatedAt` /
+`timestamp`, and the page shows it as **"Last refresh: 11 minutes ago"**, updated
+every 30 seconds without refetching.
+
+Each service has an impact weight (`S` / `M` / `L` / `XL` / `XXL`). A degraded
+small service barely moves the alert level; a major incident at GCP, AWS, Azure
+or Cloudflare sends it to Level 1. Weights live in `src/catalog.js`; the page
+shows the badge on each card.
 
 ## Run locally
 
@@ -65,7 +72,7 @@ Gitea instance does not mirror `actions/checkout`, swap it for
 
 ## Files
 
-- `src/catalog.js` — 57 services, feed URLs, product filters
+- `src/catalog.js` — ~100 services, feed URLs, product filters, impact weights (S/M/L/XL/XXL)
 - `src/normalize.js` — shared feed normalizer
 - `scripts/collect.mjs` — fetches each unique feed once and normalizes
 - `scripts/publish.mjs` — writes one JSON and uploads it
@@ -76,4 +83,5 @@ Gitea instance does not mirror `actions/checkout`, swap it for
 
 Add `{ id, name, category, url, source }` to `src/catalog.js`. Supported source
 types: `statuspage`, `aws`, `gcp`, `azure`, `hetzner`, `atom`, `rss`, `dodo`,
+`apple`, `heroku`, `simple`,
 and `none` (shows "NO SIGNAL"). Use `filter` to scope shared feeds to one product.

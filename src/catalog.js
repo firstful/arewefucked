@@ -15,6 +15,7 @@ export const CATEGORIES = [
   'Artifact Repositories',
   'SMTP Providers',
   'Payment Gateways',
+  'Other Status Pages',
 ];
 
 export const SERVICES = [
@@ -94,4 +95,57 @@ export const SERVICES = [
   { id: 'stripe', name: 'Stripe', category: 'Payment Gateways', url: 'https://status.stripe.com/', source: { type: 'atom', url: 'https://status.stripe.com/current/atom.xml', live: false } },
   { id: 'paypal', name: 'PayPal', category: 'Payment Gateways', url: 'https://www.paypal-status.com/product/production', source: { type: 'rss', url: 'https://www.paypal-status.com/feed/rss', live: false } },
   { id: 'dodo', name: 'DodoPayments', category: 'Payment Gateways', url: 'https://status.dodopayments.com/', source: { type: 'dodo', url: 'https://status.dodopayments.com/api/status' } },
+
+  // Other Status Pages
+  { id: 'acquia', name: 'Acquia', category: 'Other Status Pages', url: 'https://status.acquia.com/', source: sp('https://status.acquia.com/api/v2/summary.json') },
+  { id: 'activecampaign', name: 'ActiveCampaign', category: 'Other Status Pages', url: 'https://status.activecampaign.com/', source: sp('https://status.activecampaign.com/api/v2/summary.json') },
+  { id: 'adobe', name: 'Adobe', category: 'Other Status Pages', url: 'https://status.adobe.com/', source: { type: 'none' } },
+  { id: 'apple', name: 'Apple System Status', category: 'Other Status Pages', url: 'https://www.apple.com/support/systemstatus/', source: { type: 'apple', url: 'https://www.apple.com/support/systemstatus/data/system_status_en_US.js', live: false } },
+  { id: 'automattic', name: 'Automattic', category: 'Other Status Pages', url: 'https://status.wordpress.com/', source: { type: 'none' } },
+  { id: 'beanstalk', name: 'Beanstalk', category: 'Other Status Pages', url: 'https://www.beanstalkapp.com/', source: { type: 'none' } },
+  { id: 'blackboard', name: 'Blackboard', category: 'Other Status Pages', url: 'https://status.blackboard.com/', source: sp('https://status.blackboard.com/api/v2/summary.json') },
+  { id: 'box', name: 'Box', category: 'Other Status Pages', url: 'https://status.box.com/', source: sp('https://status.box.com/api/v2/summary.json') },
+  { id: 'sharefile', name: 'Citrix ShareFile', category: 'Other Status Pages', url: 'https://status.sharefile.com/', source: sp('https://status.sharefile.com/api/v2/summary.json') },
+  { id: 'dediserve', name: 'dediserve', category: 'Other Status Pages', url: 'https://status.dediserve.com/', source: { type: 'none' } },
+  { id: 'fedora', name: 'Fedora Infrastructure', category: 'Other Status Pages', url: 'https://status.fedoraproject.org/', source: { type: 'none' } },
+  { id: 'gandi', name: 'Gandi.net', category: 'Other Status Pages', url: 'https://status.gandi.net/', source: sp('https://status.gandi.net/api/v2/summary.json') },
+  { id: 'garmin', name: 'Garmin Connect', category: 'Other Status Pages', url: 'https://connect.garmin.com/', source: { type: 'none' } },
+  { id: 'googleapps', name: 'Google Workspace Status', category: 'Other Status Pages', url: 'https://www.google.com/appsstatus/dashboard/', source: { type: 'none' } },
+  { id: 'goto', name: 'Citrix GoToMeeting', category: 'Other Status Pages', url: 'https://status.goto.com/', source: sp('https://status.goto.com/api/v2/summary.json') },
+  { id: 'heroku', name: 'Heroku', category: 'Other Status Pages', url: 'https://status.heroku.com/', source: { type: 'heroku', url: 'https://status.heroku.com/api/v3/current-status', live: false } },
+  { id: 'hirez', name: 'HiRez Studios', category: 'Other Status Pages', url: 'https://status.hirezstudios.com/', source: { type: 'none' } },
+  { id: 'hipchat', name: 'HipChat', category: 'Other Status Pages', url: 'https://www.hipchat.com/', source: { type: 'none' } },
+  { id: 'intercom', name: 'Intercom', category: 'Other Status Pages', url: 'https://status.intercom.com/', source: { type: 'none' } },
+  { id: 'kickstarter', name: 'Kickstarter', category: 'Other Status Pages', url: 'https://status.kickstarter.com/', source: sp('https://status.kickstarter.com/api/v2/summary.json') },
+  { id: 'lol', name: 'League of Legends', category: 'Other Status Pages', url: 'https://status.leagueoflegends.com/', source: { type: 'none' } },
+  { id: 'mediatemple', name: 'Media Temple', category: 'Other Status Pages', url: 'https://mediatemple.net/', source: { type: 'none' } },
+  { id: 'xbox', name: 'Xbox Live', category: 'Other Status Pages', url: 'https://support.xbox.com/en-US/xbox-live-status', source: sp('https://xboxlive.statuspage.io/api/v2/summary.json') },
+  { id: 'nest', name: 'Nest', category: 'Other Status Pages', url: 'https://status.nest.com/', source: { type: 'none' } },
+  { id: 'ovh', name: 'OVH', category: 'Other Status Pages', url: 'https://status.ovhcloud.com/', source: { type: 'none' } },
+  { id: 'parse', name: 'Parse', category: 'Other Status Pages', url: 'https://parseplatform.org/', source: { type: 'none' } },
+  { id: 'pivotaltracker', name: 'Pivotal Tracker', category: 'Other Status Pages', url: 'https://www.pivotaltracker.com/', source: { type: 'none' } },
+  { id: 'pivotalws', name: 'Pivotal Web Services', category: 'Other Status Pages', url: 'https://run.pivotal.io/', source: { type: 'none' } },
+  { id: 'playstation', name: 'PlayStation Network', category: 'Other Status Pages', url: 'https://status.playstation.com/', source: { type: 'none' } },
+  { id: 'rackspace', name: 'Rackspace', category: 'Other Status Pages', url: 'https://status.rackspace.com/', source: { type: 'none' } },
+  { id: 'shopify', name: 'Shopify', category: 'Other Status Pages', url: 'https://www.shopifystatus.com/', source: sp('https://status.shopify.com/api/v2/summary.json') },
+  { id: 'site5', name: 'site5', category: 'Other Status Pages', url: 'https://www.site5.com/', source: { type: 'none' } },
+  { id: 'slack', name: 'Slack', category: 'Other Status Pages', url: 'https://slack-status.com/', source: { type: 'none' } },
+  { id: 'statuspage-meta', name: 'Statuspage.io Meta', category: 'Other Status Pages', url: 'https://status.statuspage.io/', source: { type: 'none' } },
+  { id: 'sumologic', name: 'Sumo Logic', category: 'Other Status Pages', url: 'https://status.sumologic.com/', source: sp('https://status.sumologic.com/api/v2/summary.json') },
+  { id: 'swift', name: 'Swift', category: 'Other Status Pages', url: 'https://swift.org/', source: { type: 'none' } },
+  { id: 'twitterdev', name: 'Twitter for Developers', category: 'Other Status Pages', url: 'https://developer.x.com/en/', source: { type: 'none' } },
+  { id: 'edgecast', name: 'Verizon Edgecast', category: 'Other Status Pages', url: 'https://status.edgecast.com/', source: { type: 'none' } },
+  { id: 'voxmedia', name: 'Vox Media', category: 'Other Status Pages', url: 'https://status.voxmedia.com/', source: { type: 'none' } },
+  { id: 'wistia', name: 'Wistia', category: 'Other Status Pages', url: 'https://status.wistia.com/', source: { type: 'simple', url: 'https://status.wistia.com/api/v2/summary.json' } },
+  { id: 'wow', name: 'World of WarCraft Realms', category: 'Other Status Pages', url: 'https://worldofwarcraft.blizzard.com/en-us/game/status', source: { type: 'none' } },
 ];
+
+const assign = (weight, ids) => Object.fromEntries(ids.split(' ').map((id) => [id, weight]));
+
+// Impact weight: S=1 M=2 L=3 XL=4 XXL=5. Small toys do not outrank GCP.
+export const WEIGHTS = {
+  ...assign('XXL', 'aws gcp azure cloudflare-host cf-dns cf-cdn'),
+  ...assign('XL', 'digitalocean vercel netlify linode hetzner fly render railway github gitlab bitbucket github-actions npm dockerhub datadog newrelic grafana pagerduty sendgrid stripe paypal akamai fastly cloudfront route53 shopify slack heroku box'),
+  ...assign('L', 'circleci mongodb supabase planetscale aws-rds gcp-sql azure-sql render-pg huggingface honeycomb betterstack quay ghcr gcr mailersend activecampaign blackboard gandi goto intercom kickstarter sumologic apple adobe wistia xbox ovh rackspace'),
+  ...assign('S', 'travis jenkins gitlab-ci smtpcom solarwinds dodo acquia beanstalk dediserve fedora garmin googleapps hirez hipchat lol mediatemple nest parse pivotaltracker pivotalws playstation site5 statuspage-meta swift twitterdev edgecast voxmedia wow'),
+};
