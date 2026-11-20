@@ -1,12 +1,18 @@
 // Fetch every status feed once, write one JSON file, optionally upload it.
 // The static site reads only that JSON — no per-visitor API calls.
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { collect } from './collect.mjs';
 import { upload } from './upload.mjs';
 
 const out = path.resolve(process.env.STATUS_OUT || '.cache/status.json');
-const snapshot = await collect();
+let previous = [];
+try {
+  previous = JSON.parse(await readFile(out, 'utf8')).services || [];
+} catch {
+  // First run — no previous snapshot to fall back to.
+}
+const snapshot = await collect(previous);
 
 await mkdir(path.dirname(out), { recursive: true });
 await writeFile(out, JSON.stringify(snapshot));

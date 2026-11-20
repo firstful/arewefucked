@@ -3,6 +3,7 @@ import { STATES } from './normalize.js';
 const META_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
 const STATUS_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? './data/status.json' : META_URL;
 const STALE_MS = 30 * 60 * 1000;
+const LAST_GOOD_OLD_MS = 30 * 60 * 1000;
 const LEVELS = [
   { n: 5, caption: 'NOMINAL', label: 'NOMINAL', color: '#5ee7a0', verdict: 'Nothing is on fire. For once.' },
   { n: 4, caption: 'ELEVATED', label: 'PLANNED / UNREADABLE', color: '#9aa7ff', verdict: 'Planned work or missing data. Nothing to panic about.' },
@@ -139,11 +140,16 @@ function renderSections() {
     return `<div class="section-head"><h2>${esc(name)}</h2><span>${items.length} services</span></div>
       <div class="grid">${items.map((s) => {
         const meta = STATES[s.status.state] || STATES.unknown;
-        return `<a class="card" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">
+        const goodAge = Date.now() - Date.parse(s.lastGoodFetchAt || '');
+        const oldGood = Number.isFinite(goodAge) && goodAge > LAST_GOOD_OLD_MS;
+        const stamp = oldGood
+          ? `<span class="source-tag last-good">LAST GOOD ${esc(humanize(s.lastGoodFetchAt))}</span>`
+          : `<span class="source-tag">${s.stale ? 'STALE' : 'SNAPSHOT'} · ${esc(relativeTime(s.fetchedAt))}</span>`;
+        return `<a class="card ${s.stale || oldGood ? 'stale' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">
           <div class="card-top"><span class="card-name"><span class="weight" title="impact weight ${esc(s.weight)}">${esc(s.weight)}</span><h3>${esc(s.name)}</h3></span><span class="pill">${esc(meta.label)}</span></div>
           <p class="quip">${esc(quip(s))}</p>
           <p class="detail">${esc(s.status.detail || 'No detail available.')}</p>
-          <div class="card-foot"><span class="source-tag">SNAPSHOT · ${esc(relativeTime(s.fetchedAt))}</span><span>status page ↗</span></div>
+          <div class="card-foot">${stamp}<span>status page ↗</span></div>
         </a>`;
       }).join('')}</div>`;
   }).join('');

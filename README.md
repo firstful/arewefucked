@@ -24,8 +24,14 @@ publish-status.yml  every 15 min (+ manual)
 Browser fetches https://arewefcked.blob.core.windows.net/status/status.json
 ```
 
-The site polls the JSON every 2 minutes. The JSON carries `timestamp`; the page
-shows **"Last refresh: 11 minutes ago"**, re-humanized every 30 seconds.
+The site polls the JSON every 2 minutes. The JSON carries `timestamp` plus a
+`lastGoodFetchAt` per service; the page shows **"Last refresh: 11 minutes ago"**
+and flags any service whose last good fetch is over 30 minutes old.
+
+Feed fetches retry up to 3 times with exponential backoff + jitter (respecting
+`Retry-After`). If a feed still fails, the last known good status is reused and
+the card is marked `STALE` rather than silently reset. Configure with
+`FETCH_RETRIES` and `FETCH_BACKOFF_MS`.
 
 If the publisher goes quiet for **>30 minutes**, a full-screen overlay says
 **"oh fuck… we're flying blind"** and the stale cards are marked as history.
