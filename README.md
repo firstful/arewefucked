@@ -1,87 +1,71 @@
 # arewefucked.xyz
 
-Real status feeds, blunt commentary. A static site that reads **one JSON file**
-published by a job every 15 minutes. No per-visitor API calls, no backend.
+Real status feeds, blunt commentary. A static site on Azure Static Web Apps that
+reads **one public JSON blob** published by a job every 15 minutes. The JSON is
+never bundled into the SWA deployment.
 
-**The humor is commentary, not attribution.** "DEGRADED" means a vendor's own status
-feed reported a problem — not that a cyber attack was confirmed. Every card links
-to the real status page.
+**The humor is commentary, not attribution.** "DEGRADED" means a vendor's own
+status feed reported a problem — not that a cyber attack was confirmed. Every
+card links to the real status page.
 
 ## Flow
 
 ```
-cron / Actions (every 15m)
-  → npm run publish        # fetch all public feeds once, write one JSON
-  → BLOB_UPLOAD_CMD        # aws s3 cp / rclone / curl / anything
-  → blob storage
-  → arewefucked.xyz fetches that single JSON
+Gitea Actions (every 15m)
+  → npm run build           # static UI only → dist/ (no status.json)
+  → npm run publish         # fetch all feeds once → .cache/status.json
+  → deploy-blob.mjs         # upload to Azure Blob + set CORS
+  → swa deploy ./dist       # deploy static UI
+  → browser fetches https://arewefcked.blob.core.windows.net/status/status.json
 ```
 
-The site polls the JSON every 2 minutes (and on **↻ refresh**). If the blob has
-not changed, nothing visually changes. The JSON carries `generatedAt` /
-`timestamp`, and the page shows it as **"Last refresh: 11 minutes ago"**, updated
-every 30 seconds without refetching.
+The site polls the JSON every 2 minutes. The JSON carries `timestamp`; the page
+shows **"Last refresh: 11 minutes ago"**, re-humanized every 30 seconds.
 
-Each service has an impact weight (`S` / `M` / `L` / `XL` / `XXL`). A degraded
-small service barely moves the alert level; a major incident at GCP, AWS, Azure
-or Cloudflare sends it to Level 1. Weights live in `src/catalog.js`; the page
-shows the badge on each card.
+If the publisher goes quiet for **>30 minutes**, a full-screen overlay says
+**"oh fuck… we're flying blind"** and the stale cards are marked as history.
+It can be dismissed for the current session.
+
+Each service has an impact weight (`S` / `M` / `L` / `XL` / `XXL`). A small
+service going down barely moves the alert level; a major GCP/AWS/Azure/Cloudflare
+incident sends it to Level 1. Weights live in `src/catalog.js` and show as badges.
 
 ## Run locally
 
 ```bash
 cd ~/susmeter
 npm run build
+STATUS_OUT=dist/data/status.json npm run publish
 python3 -m http.server 8080 -d dist
 ```
 
-`npm run build` = `npm run publish` plus copying the static UI into `dist/`.
-Node 18+, no npm dependencies.
+On localhost the app reads `./data/status.json`; in production it reads the blob
+URL from `meta[name="status-json"]`. Node 18+; local build has no dependencies.
 
-## Publish the JSON
+## Azure wiring
 
-```bash
-STATUS_OUT=dist/data/status.json \
-BLOB_UPLOAD_CMD='aws s3 cp $FILE s3://bucket/status.json --cache-control no-store' \
-npm run publish
-```
+Repo secrets: `AZ_BLOB_CONN_STRING`, `AZ_SWA_DEPLOY_TOKEN`.
 
-`$FILE` expands to the generated JSON path. Any shell command works — `rclone
-copyto`, `az storage blob upload`, `curl` with a signed URL, etc. Without
-`BLOB_UPLOAD_CMD`, the JSON is only written locally.
+Workflow: `.gitea/workflows/publish.yml` (cron `*/15 * * * *`, also manually
+dispatchable). It uses `@azure/storage-blob` to upload/create the container and
+set CORS for `arewefucked.xyz`, the SWA default hostname, and localhost.
 
-Point the site at a different JSON URL by editing this tag in `public/index.html`
-before building:
-
-```html
-<meta name="status-json" content="https://json.example.com/status.json" />
-```
-
-A cross-origin URL needs CORS (`Access-Control-Allow-Origin`) since the browser
-fetches it. Same-origin (`./data/status.json`) avoids that entirely.
-
-## Schedule it
-
-`.gitea/workflows/publish.yml` runs every 15 minutes on Gitea Actions. If your
-Gitea instance does not mirror `actions/checkout`, swap it for
-`gitea.com/actions/checkout@v4`. For plain cron:
-
-```cron
-*/15 * * * * cd /home/reeds/susmeter && npm run publish >> publish.log 2>&1
-```
+If your Gitea does not mirror `actions/checkout@v4`, swap it for
+`gitea.com/actions/checkout@v4`.
 
 ## Files
 
-- `src/catalog.js` — ~100 services, feed URLs, product filters, impact weights (S/M/L/XL/XXL)
+- `src/catalog.js` — ~100 services, feed URLs, filters, impact weights
 - `src/normalize.js` — shared feed normalizer
 - `scripts/collect.mjs` — fetches each unique feed once and normalizes
 - `scripts/publish.mjs` — writes one JSON and uploads it
-- `scripts/build.mjs` — publish + copy static UI to `dist/`
+- `scripts/deploy-blob.mjs` — Azure Blob upload + CORS
+- `scripts/site.mjs` — copies static UI to `dist/` (no JSON)
 - `public/` — static UI (HTML/CSS/JS, no framework)
 
 ## Adding a service
 
 Add `{ id, name, category, url, source }` to `src/catalog.js`. Supported source
 types: `statuspage`, `aws`, `gcp`, `azure`, `hetzner`, `atom`, `rss`, `dodo`,
-`apple`, `heroku`, `simple`,
-and `none` (shows "NO SIGNAL"). Use `filter` to scope shared feeds to one product.
+`apple`, `heroku`, `simple`, and `none` (shows "NO FEED"). Use `filter` to scope
+shared feeds to one product.

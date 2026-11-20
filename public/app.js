@@ -1,6 +1,8 @@
 import { STATES } from './normalize.js';
 
-const STATUS_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
+const META_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
+const STATUS_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? './data/status.json' : META_URL;
+const STALE_MS = 30 * 60 * 1000;
 const LEVELS = [
   { n: 5, caption: 'NOMINAL', label: 'NOMINAL', color: '#5ee7a0', verdict: 'Nothing is on fire. For once.' },
   { n: 4, caption: 'ELEVATED', label: 'PLANNED / UNREADABLE', color: '#9aa7ff', verdict: 'Planned work or missing data. Nothing to panic about.' },
@@ -41,6 +43,7 @@ const QUIPS = {
 
 let data = null;
 let stale = false;
+let dismissed = false;
 let loading = false;
 let query = '';
 let category = 'All';
@@ -64,6 +67,22 @@ function relativeTime(iso) {
 
 function updateRefreshAge() {
   if (data && !stale) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
+  checkStale();
+}
+
+function checkStale() {
+  const overlay = el('stale-overlay');
+  if (!data || dismissed) {
+    overlay.hidden = true;
+    return;
+  }
+  const age = Date.now() - Date.parse(data.timestamp || data.generatedAt || '');
+  if (!Number.isFinite(age) || age <= STALE_MS) {
+    overlay.hidden = true;
+    return;
+  }
+  el('stale-detail').textContent = `No publisher update for ${humanize(data.timestamp || data.generatedAt)}. Everything below is history, not live status.`;
+  overlay.hidden = false;
 }
 
 function renderHero() {
@@ -143,6 +162,7 @@ function renderAll() {
   renderTicker();
   renderFilters();
   renderSections();
+  checkStale();
 }
 
 async function loadSnapshot() {
@@ -177,6 +197,10 @@ async function loadSnapshot() {
 }
 
 el('refresh').addEventListener('click', loadSnapshot);
+el('stale-dismiss').addEventListener('click', () => {
+  dismissed = true;
+  el('stale-overlay').hidden = true;
+});
 el('search').addEventListener('input', (event) => {
   query = event.target.value.trim().toLowerCase();
   renderSections();

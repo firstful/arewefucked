@@ -8,15 +8,23 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      AZ_BLOB_CONN_STRING: ${{ secrets.AZ_BLOB_CONN_STRING }}
+      AZ_SWA_DEPLOY_TOKEN: ${{ secrets.AZ_SWA_DEPLOY_TOKEN }}
+      AZ_BLOB_CONTAINER: status
+      AZ_BLOB_NAME: status.json
+      STATUS_OUT: .cache/status.json
+      BLOB_UPLOAD_CMD: node scripts/deploy-blob.mjs
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Fetch feeds and publish JSON
-        env:
-          BLOB_UPLOAD_CMD: ${{ secrets.BLOB_UPLOAD_CMD }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ vars.AWS_REGION || 'auto' }}
+      - name: Install Azure blob SDK
+        run: npm install --no-audit --no-fund
+      - name: Build static site (no status.json inside)
+        run: npm run build
+      - name: Fetch feeds and publish status.json to blob
         run: npm run publish
+      - name: Deploy static site to Azure Static Web Apps
+        run: npx --yes @azure/static-web-apps-cli deploy ./dist --api-location "" --deployment-token "$AZ_SWA_DEPLOY_TOKEN" --env production

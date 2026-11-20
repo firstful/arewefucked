@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AreWeFucked.xyz — is the internet cooked?</title>
   <meta name="description" content="Real status feeds, unserious commentary. A status page aggregator for the chronically online." />
-  <meta name="status-json" content="./data/status.json" />
+  <meta name="status-json" content="https://arewefcked.blob.core.windows.net/status/status.json" />
   <link rel="stylesheet" href="./styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%80%3C/text%3E%3C/svg%3E" />
 </head>
@@ -47,6 +47,15 @@
     <p><strong>Real status data. Blunt commentary.</strong> Not a security claim, not incident attribution, not a source of truth. If something actually matters, click through to the vendor's own status page.</p>
     <p class="muted">Built from public status APIs. No vendor affiliation.</p>
   </footer>
+
+  <div id="stale-overlay" class="stale-overlay" hidden>
+    <div class="stale-card">
+      <p class="eyebrow">PUBLISHER WENT QUIET</p>
+      <h2>oh fuck… we're flying blind</h2>
+      <p id="stale-detail" class="muted"></p>
+      <button id="stale-dismiss" type="button">view stale data anyway</button>
+    </div>
+  </div>
 
   <script type="module" src="./app.js"></script>
 </body>
