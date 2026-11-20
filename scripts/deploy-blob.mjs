@@ -32,20 +32,18 @@ try {
 const properties = await service.getProperties();
 await service.setProperties({
   ...properties,
-  cors: {
-    corsRules: [{
-      allowedOrigins: [
-        'https://arewefucked.xyz',
-        'https://www.arewefucked.xyz',
-        'https://white-cliff-09a42e610.3.azurestaticapps.net',
-        'http://localhost:8080',
-      ],
-      allowedMethods: ['GET', 'HEAD'],
-      allowedHeaders: ['*'],
-      exposedHeaders: ['*'],
-      maxAgeInSeconds: 300,
-    }],
-  },
+  cors: [{
+    allowedOrigins: [
+      'https://arewefucked.xyz',
+      'https://www.arewefucked.xyz',
+      'https://white-cliff-09a42e610.3.azurestaticapps.net',
+      'http://localhost:8080',
+    ],
+    allowedMethods: ['GET', 'HEAD'],
+    allowedHeaders: ['*'],
+    exposedHeaders: ['*'],
+    maxAgeInSeconds: 300,
+  }],
 });
 
 const blob = container.getBlockBlobClient(blobName);
