@@ -1,0 +1,11 @@
+{
+  "name": "susmeter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Status page aggregator with main-character energy",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "publish": "node scripts/publish.mjs"
+  }
+}
