@@ -11,12 +11,17 @@ card links to the real status page.
 ## Flow
 
 ```
-Gitea Actions (every 15m)
-  → npm run build           # static UI only → dist/ (no status.json)
-  → npm run publish         # fetch all feeds once → .cache/status.json
-  → deploy-blob.mjs         # upload to Azure Blob + set CORS
-  → swa deploy ./dist       # deploy static UI
-  → browser fetches https://arewefcked.blob.core.windows.net/status/status.json
+Two Gitea Actions:
+
+deploy-site.yml     on push to public/**, src/normalize.js, scripts/site.mjs
+  → npm run build                     # UI only → dist/ (no status.json)
+  → swa deploy ./dist                 # Azure Static Web Apps
+
+publish-status.yml  every 15 min (+ manual)
+  → npm run publish                   # fetch all feeds → .cache/status.json
+  → deploy-blob.mjs                   # upload to Azure Blob + set CORS
+
+Browser fetches https://arewefcked.blob.core.windows.net/status/status.json
 ```
 
 The site polls the JSON every 2 minutes. The JSON carries `timestamp`; the page
@@ -46,9 +51,11 @@ URL from `meta[name="status-json"]`. Node 18+; local build has no dependencies.
 
 Repo secrets: `AZ_BLOB_CONN_STRING`, `AZ_SWA_DEPLOY_TOKEN`.
 
-Workflow: `.gitea/workflows/publish.yml` (cron `*/15 * * * *`, also manually
-dispatchable). It uses `@azure/storage-blob` to upload/create the container and
-set CORS for `arewefucked.xyz`, the SWA default hostname, and localhost.
+`.gitea/workflows/publish-status.yml` runs every 15 minutes and uses
+`@azure/storage-blob` to upload/create the container and set CORS for
+`arewefucked.xyz`, the SWA default hostname, and localhost.
+`.gitea/workflows/deploy-site.yml` only runs when template files change (plus
+manual dispatch) and deploys the UI.
 
 If your Gitea does not mirror `actions/checkout@v4`, swap it for
 `gitea.com/actions/checkout@v4`.

@@ -1,0 +1,26 @@
+name: deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'src/normalize.js'
+      - 'scripts/site.mjs'
+      - '.gitea/workflows/deploy-site.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AZ_SWA_DEPLOY_TOKEN: ${{ secrets.AZ_SWA_DEPLOY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build static site (no status.json)
+        run: npm run build
+      - name: Deploy to Azure Static Web Apps
+        run: npx --yes @azure/static-web-apps-cli deploy ./dist --api-location "" --deployment-token "$AZ_SWA_DEPLOY_TOKEN" --env production

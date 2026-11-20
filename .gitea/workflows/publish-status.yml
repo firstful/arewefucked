@@ -1,4 +1,4 @@
-name: publish status snapshot
+name: publish status json
 
 on:
   schedule:
@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZ_BLOB_CONN_STRING: ${{ secrets.AZ_BLOB_CONN_STRING }}
-      AZ_SWA_DEPLOY_TOKEN: ${{ secrets.AZ_SWA_DEPLOY_TOKEN }}
       AZ_BLOB_CONTAINER: status
       AZ_BLOB_NAME: status.json
       STATUS_OUT: .cache/status.json
@@ -22,9 +21,5 @@ jobs:
           node-version: '20'
       - name: Install Azure blob SDK
         run: npm install --no-audit --no-fund
-      - name: Build static site (no status.json inside)
-        run: npm run build
       - name: Fetch feeds and publish status.json to blob
         run: npm run publish
-      - name: Deploy static site to Azure Static Web Apps
-        run: npx --yes @azure/static-web-apps-cli deploy ./dist --api-location "" --deployment-token "$AZ_SWA_DEPLOY_TOKEN" --env production
