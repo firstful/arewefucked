@@ -18,7 +18,16 @@ const file = path.resolve(process.env.FILE || 'dist/data/status.json');
 
 const service = new BlobServiceClient(`https://${account}.blob.${suffix}`, new StorageSharedKeyCredential(account, key));
 const container = service.getContainerClient(containerName);
-await container.createIfNotExists({ access: 'blob' });
+await container.createIfNotExists();
+try {
+  await container.setAccessPolicy('blob');
+} catch (error) {
+  if (error?.code === 'PublicAccessNotPermitted') {
+    console.warn('WARNING: storage account blocks public blob access. Enable "Allow blob public access" in Azure, then rerun this job.');
+  } else {
+    throw error;
+  }
+}
 
 const properties = await service.getProperties();
 await service.setProperties({
