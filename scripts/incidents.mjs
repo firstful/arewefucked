@@ -37,7 +37,7 @@ function summaryPrompt(batch) {
   const lines = batch.map((i) => `- id=${i.id} | service=${i.serviceName} | state=${i.state} | title=${i.title}`).join('\n');
   return [
     'You write copy for a blunt public status-page aggregator.',
-    'For EACH incident below, write ONE short summary (1-2 sentences, under 30 words).',
+    'For EACH incident group below, write ONE short summary (1-2 sentences, under 30 words).',
     'Voice: light Gen Z attitude, dry and funny, like a tired sysadmin posting. No excessive slang, no emoji, no hashtags, no skibidi/rizz/gyatt nonsense.',
     'Do not invent facts or causality. Do not mention that you are an AI. Do not use markdown.',
     'Return ONLY a JSON array of objects: {"id":"the-id","text":"the summary"}. Include every id exactly once.',
@@ -108,6 +108,7 @@ export async function reconcileIncidents(services, previousIncidents = []) {
         id,
         serviceId: service.id,
         serviceName: service.name,
+        provider: service.provider || service.id,
         category: service.category,
         weight: service.weight,
         title: String(incident.title).slice(0, 200),
@@ -136,26 +137,36 @@ export async function reconcileIncidents(services, previousIncidents = []) {
     }
   }
 
-  const pending = [...previous.values()]
-    .filter((i) => i.summaryPending || (i.summaryError && !i.summary && (i.summaryAttempts || 0) < 2))
-    .sort((a, b) => Date.parse(a.firstSeenAt) - Date.parse(b.firstSeenAt))
-    .slice(0, LLM_MAX_PER_RUN);
+  const pendingGroups = new Map();
+  for (const item of previous.values()) {
+    if (!(item.summaryPending || (item.summaryError && !item.summary && (item.summaryAttempts || 0) < 2))) continue;
+    const key = item.provider || item.serviceName || item.serviceId;
+    if (!pendingGroups.has(key)) pendingGroups.set(key, []);
+    pendingGroups.get(key).push(item);
+  }
+
+  const groupBatch = [...pendingGroups.entries()].map(([provider, items]) => ({
+    id: `group:${provider}`,
+    serviceId: items[0].serviceId,
+    serviceName: provider,
+    state: items.some((i) => i.state === 'meltdown') ? 'meltdown' : items.some((i) => i.state === 'cooked') ? 'cooked' : items[0].state,
+    title: items.map((i) => i.title).join(' | '),
+    _provider: provider,
+    _items: items,
+  })).sort((a, b) => Date.parse(a._items[0].firstSeenAt || 0) - Date.parse(b._items[0].firstSeenAt || 0)).slice(0, LLM_MAX_PER_RUN);
 
   let generated = 0;
-  if (pending.length) {
-    const { byId, model, error } = await summarizeBatch(pending);
-    for (const item of pending) {
-      const text = byId.get(item.id);
-      const current = previous.get(item.id);
-      if (!current) continue;
-      previous.set(item.id, text
-        ? { ...current, summary: text, summaryModel: model, summaryAt: now, summaryError: null, summaryAttempts: 0, summaryPending: false }
-        : {
-            ...current,
-            summaryError: error || 'summary unavailable',
-            summaryAttempts: (current.summaryAttempts || 0) + 1,
-            summaryPending: false,
-          });
+  if (groupBatch.length) {
+    const { byId, model, error } = await summarizeBatch(groupBatch);
+    for (const group of groupBatch) {
+      const text = byId.get(group.id);
+      for (const item of group._items) {
+        const current = previous.get(item.id);
+        if (!current) continue;
+        previous.set(item.id, text
+          ? { ...current, summary: text, summaryModel: model, summaryAt: now, summaryError: null, summaryAttempts: 0, summaryPending: false }
+          : { ...current, summaryError: error || 'summary unavailable', summaryAttempts: (current.summaryAttempts || 0) + 1, summaryPending: false });
+      }
       generated += text ? 1 : 0;
     }
   }
@@ -164,8 +175,8 @@ export async function reconcileIncidents(services, previousIncidents = []) {
     .sort((a, b) => Date.parse(b.lastSeenAt || 0) - Date.parse(a.lastSeenAt || 0))
     .slice(0, LEDGER_LIMIT);
 
-  if (pending.length) {
-    console.log(`[susmeter] summarized ${generated}/${pending.length} new incidents via ${LLM_URL}`);
+  if (groupBatch.length) {
+    console.log(`[susmeter] summarized ${generated}/${groupBatch.length} incident groups via ${LLM_URL}`);
   }
   return incidents;
 }

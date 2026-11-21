@@ -9,6 +9,28 @@ const cache = new Map();
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const PROVIDER_LABELS = {
+  'status.aws.amazon.com': 'Amazon Web Services',
+  'status.cloud.google.com': 'Google Cloud',
+  'azure.status.microsoft': 'Microsoft Azure',
+  'status.azure.com': 'Microsoft Azure',
+  'www.cloudflarestatus.com': 'Cloudflare',
+  'www.githubstatus.com': 'GitHub',
+};
+
+function providerFor(service) {
+  if (service.provider) return service.provider;
+  const url = service?.source?.url;
+  if (!url) return service.id || 'unknown';
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    if (PROVIDER_LABELS[host]) return PROVIDER_LABELS[host];
+    return host.replace(/^www\./, '').replace(/^status\./, '');
+  } catch {
+    return service.id || 'unknown';
+  }
+}
+
 function retryDelay(attempt, response) {
   const retryAfter = response?.headers?.get?.('retry-after');
   if (retryAfter) {
@@ -72,6 +94,7 @@ export async function collect(previousServices = [], previousIncidents = []) {
           feedOk: false,
           stale: true,
           weight,
+          provider: old.provider || providerFor(service),
         }
       : {
           ...service,
@@ -81,6 +104,7 @@ export async function collect(previousServices = [], previousIncidents = []) {
           lastGoodFetchAt: null,
           feedOk: false,
           stale: false,
+          provider: providerFor(service),
         };
 
     if (!service.source.url) return fallback('No public status feed');
@@ -92,6 +116,7 @@ export async function collect(previousServices = [], previousIncidents = []) {
       weight,
       category: service.category,
       url: service.url,
+      provider: providerFor(service),
       source: { type: service.source.type, filter: service.source.filter || null, url: service.source.url },
       status: normalize(service.source, raw),
       fetchedAt: new Date().toISOString(),

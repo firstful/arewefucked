@@ -1,13 +1,13 @@
 // Shared normalizer: runs in Node (build) and in the browser (live refresh).
 // Input: raw payload from a status source. Output: one tidy, comparable shape.
 
-const STATE_RANK = { ok: 0, maintenance: 1, sus: 2, cooked: 3, meltdown: 4, unknown: 0 };
+export const STATE_RANK = { ok: 0, maintenance: 1, sus: 2, cooked: 3, meltdown: 4, unknown: 0 };
 
 export const STATES = {
   ok: { label: 'NOMINAL', emoji: '😌', color: '#5ee7a0' },
   maintenance: { label: 'PLANNED', emoji: '🧘', color: '#9aa7ff' },
   sus: { label: 'DEGRADED', emoji: '👀', color: '#ffd166' },
-  cooked: { label: 'CRITICAL', emoji: '🔥', color: '#ff9f5a' },
+  cooked: { label: 'OUTAGE', emoji: '🔥', color: '#ff9f5a' },
   meltdown: { label: 'MAJOR', emoji: '💀', color: '#ff5d7a' },
   unknown: { label: 'NO FEED', emoji: '📡', color: '#7b8494' },
 };

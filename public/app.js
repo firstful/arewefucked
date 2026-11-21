@@ -1,4 +1,4 @@
-import { STATES } from './normalize.js';
+import { STATES, STATE_RANK } from './normalize.js';
 
 const META_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
 const STATUS_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? './data/status.json' : META_URL;
@@ -37,7 +37,7 @@ const FALLBACKS = {
   ok: [
     'quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.',
     'nothing to see.', 'green across the board.', 'sleeping nicely.', 'vibing.',
-    'status page is chill.', 'zero drama detected.', 'all systems normal.', 'no notes.',
+    'status page is chill.', 'zero drama here.', 'all systems normal.', 'no notes.',
     'calm, suspiciously.', 'clean sheet.', 'nothing cooking.', 'fine. actually fine.',
     'no complaints filed.', 'smooth sailing.', 'ordinary day.', 'boring. thankfully.',
   ],
@@ -127,7 +127,10 @@ function checkStale() {
 
 function renderHero() {
   const services = data.services;
-  const { score, level } = threat(services);
+  const { score, level: computedLevel } = threat(services);
+  const publishedN = (typeof data.headline?.level === 'number') ? data.headline.level : null;
+  const level = (publishedN !== null ? LEVELS.find((l) => l.n === publishedN) : null) || computedLevel;
+  const caption = data.headline?.levelCaption || level.caption;
   const counts = services.reduce((acc, s) => {
     acc[s.status.state] = (acc[s.status.state] || 0) + 1;
     return acc;
@@ -139,10 +142,10 @@ function renderHero() {
   el('alert-caption').textContent = `LEVEL ${level.n} · ${level.label}`;
   el('thermo-fill').style.height = `${fill}%`;
   el('thermo-level').textContent = level.n;
-  el('thermo-markers').innerHTML = LEVELS.map((l) => `
+  el('thermo-markers').innerHTML = [...LEVELS].reverse().map((l) => `
     <span class="${l.n === level.n ? 'on' : ''}" style="--level-color:${l.color}">${l.n}</span>
   `).join('');
-  el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} critical · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
+  el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
   el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
 }
 
@@ -159,7 +162,7 @@ function renderTicker() {
   node.innerHTML = `${line} &nbsp;✦&nbsp; ${line}`;
 }
 
-const SEVERITY = { ok: 0, unknown: 1, maintenance: 2, sus: 3, cooked: 4, meltdown: 5 };
+const SEVERITY = { ok: 0, unknown: 0, maintenance: 1, sus: 2, cooked: 3, meltdown: 4 };
 const TROUBLE = new Set(['sus', 'cooked', 'meltdown']);
 
 function visibleServices() {
@@ -213,16 +216,35 @@ function renderIncidents() {
     return;
   }
   feed.hidden = false;
-  el('incident-count').textContent = `${active.length} live`;
-  el('incidents').innerHTML = active.slice(0, 12).map((i) => {
-    const meta = STATES[i.state] || STATES.unknown;
-    const summary = quip({ id: i.id, status: { state: i.state } }, i.summary);
-    const body = `<span class="incident-top"><span class="incident-service">${esc(i.serviceName)}</span><span class="pill" style="--state-color:${meta.color}">${esc(meta.label)}</span></span>
-      <p class="incident-title">${esc(i.title)}</p>
+  // Group incident chatter by provider/company so one card (and one summary)
+  // represents all of a vendor's open chatter instead of a flat per-incident list.
+  const groups = new Map();
+  for (const i of active) {
+    const key = i.provider || i.serviceName || i.serviceId;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(i);
+  }
+  const groupList = [...groups.entries()].map(([provider, items]) => {
+    const state = items.reduce((worst, i) => ((STATE_RANK[i.state] || 0) > (STATE_RANK[worst] || 0) ? i.state : worst), items[0].state);
+    const detectedAt = items.map((i) => i.detectedAt).filter(Boolean).sort()[0] || null;
+    const lastSeen = items.reduce((m, i) => Math.max(m, Date.parse(i.lastSeenAt || 0)), 0);
+    const summary = items.find((i) => i.summary)?.summary || null;
+    const url = items.find((i) => i.url)?.url || items[0].url || '';
+    return { provider, items, state, detectedAt, lastSeen, summary, url };
+  }).sort((a, b) => b.lastSeen - a.lastSeen);
+  el('incident-count').textContent = `${groupList.length} live`;
+  el('incidents').innerHTML = groupList.slice(0, 12).map((g) => {
+    const meta = STATES[g.state] || STATES.unknown;
+    const summary = quip({ id: g.provider, status: { state: g.state } }, g.summary);
+    const titles = g.items.length > 1
+      ? `<ul class="incident-titles">${g.items.map((i) => `<li>${esc(i.title)}</li>`).join('')}</ul>`
+      : `<p class="incident-title">${esc(g.items[0].title)}</p>`;
+    const body = `<span class="incident-top"><span class="incident-service">${esc(g.provider)}</span><span class="pill" style="--state-color:${meta.color}">${esc(meta.label)}</span></span>
+      ${titles}
       <p class="incident-summary">${esc(summary)}</p>
-      <span class="incident-meta">${esc(i.weight)} · detected ${esc(relativeTime(i.detectedAt))}</span>`;
-    return i.url
-      ? `<a class="incident-card" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">${body}</a>`
+      <span class="incident-meta">${esc(g.items[0].weight)} · ${g.items.length} incident${g.items.length === 1 ? '' : 's'} · ongoing since ${esc(relativeTime(g.detectedAt))}</span>`;
+    return g.url
+      ? `<a class="incident-card" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">${body}</a>`
       : `<div class="incident-card" style="--state-color:${meta.color}">${body}</div>`;
   }).join('');
 }
