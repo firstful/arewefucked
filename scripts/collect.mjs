@@ -1,5 +1,7 @@
 import { SERVICES, WEIGHTS } from '../src/catalog.js';
 import { normalize } from '../src/normalize.js';
+import { incidentId, reconcileIncidents } from './incidents.mjs';
+import { generateHeadline } from './headline.mjs';
 
 const MAX_ATTEMPTS = Math.max(1, Number(process.env.FETCH_RETRIES || 3));
 const BASE_DELAY = Math.max(50, Number(process.env.FETCH_BACKOFF_MS || 600));
@@ -53,7 +55,7 @@ async function fetchSource(url) {
   return task;
 }
 
-export async function collect(previousServices = []) {
+export async function collect(previousServices = [], previousIncidents = []) {
   cache.clear();
   const previous = new Map(previousServices.filter((s) => s?.id).map((s) => [s.id, s]));
   const generatedAt = new Date().toISOString();
@@ -99,5 +101,14 @@ export async function collect(previousServices = []) {
     };
   }));
 
-  return { generatedAt, timestamp: generatedAt, services };
+  for (const service of services) {
+    service.status.incidents = (service.status.incidents || []).map((incident) => ({
+      ...incident,
+      id: String(incident.id || incidentId(service.id, incident)),
+    }));
+  }
+
+  const incidents = await reconcileIncidents(services, previousIncidents);
+  const headline = await generateHeadline(services);
+  return { generatedAt, timestamp: generatedAt, services, incidents, headline };
 }

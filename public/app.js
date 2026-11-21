@@ -33,13 +33,52 @@ function humanize(iso) {
   const days = Math.round(hours / 24);
   return `${days} day${days === 1 ? '' : 's'} ago`;
 }
-const QUIPS = {
-  ok: ['quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.'],
-  maintenance: ['planned downtime.', 'scheduled. not a surprise.', 'maintenance window. fine.'],
-  sus: ['something is off.', 'degraded, but upright.', 'watching it.', 'minor trouble reported.'],
-  cooked: ['this one is hurting.', 'a real incident, not vibes.', 'outage. sorry.', 'yep, that is broken.'],
-  meltdown: ['major incident. no notes.', 'this is the bad one.', 'very not fine. click through.', 'critical.'],
-  unknown: ['no readable feed.', 'status page unavailable.', 'no data. not assuming the worst.'],
+const FALLBACKS = {
+  ok: [
+    'quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.',
+    'nothing to see.', 'green across the board.', 'sleeping nicely.', 'vibing.',
+    'status page is chill.', 'zero drama detected.', 'all systems normal.', 'no notes.',
+    'calm, suspiciously.', 'clean sheet.', 'nothing cooking.', 'fine. actually fine.',
+    'no complaints filed.', 'smooth sailing.', 'ordinary day.', 'boring. thankfully.',
+  ],
+  maintenance: [
+    'planned downtime.', 'scheduled. not a surprise.', 'maintenance window. fine.',
+    'on the calendar.', 'expected interruptions.', 'keeping it tidy.', 'routine work.',
+    'someone is fixing something.', 'planned, not broken.', 'brief nap incoming.',
+    'scheduled wobble.', 'admin housekeeping.', 'booked in advance.', 'maintenance mode.',
+    'no panic, just plumbing.', 'planned pause.', 'holding pattern.', "upgrade o'clock.",
+    'they meant to do this.', 'maintenance, not mayhem.',
+  ],
+  sus: [
+    'something is off.', 'degraded, but upright.', 'watching it.', 'minor trouble reported.',
+    'a little wobbly.', 'not perfect, still up.', 'mild concern.', 'slower than usual.',
+    'issues noted.', 'some users will feel this.', 'shaky but alive.', 'under observation.',
+    'not a great look.', 'slight turbulence.', 'limping along.', 'partly cooked.',
+    'getting complaints.', 'noticeable hiccup.', 'bumpy, not fatal.', 'keep an eye on it.',
+  ],
+  cooked: [
+    'this one is hurting.', 'a real incident, not vibes.', 'outage. sorry.', 'yep, that is broken.',
+    'properly cooked.', 'not looking good.', 'users are noticing.', 'this is a bad one.',
+    'service is struggling.', 'incident confirmed.', 'ouch.', 'actively failing.',
+    'hard downtime.', 'logs are crying.', 'not a drill.', 'currently cooked.',
+    'significant trouble.', 'somebody is on call.', 'this hurts.', 'red alert energy.',
+  ],
+  meltdown: [
+    'major incident. no notes.', 'this is the bad one.', 'very not fine. click through.', 'critical.',
+    'full meltdown.', 'everything is on fire.', 'worst case, basically.', 'escalate immediately.',
+    'major outage.', 'this is the one.', 'oh no. actually oh no.', 'catastrophic vibes.',
+    'not survivable gracefully.', 'big red button territory.', 'everyone is awake now.',
+    'severe and ongoing.', 'straight up cooked.', 'the bad bad.', 'incident commander energy.',
+    'this is why we have pagers.',
+  ],
+  unknown: [
+    'no readable feed.', 'status page unavailable.', 'no data. not assuming the worst.',
+    'signal lost.', 'feed went quiet.', 'cannot verify.', 'no answer from the page.',
+    'status page is missing.', 'blank chart energy.', 'we are flying blind here.',
+    'nothing to parse.', 'feed hiccup.', 'no signal, no verdict.', 'unreachable.',
+    'not enough information.', 'page gave us nothing.', 'cant read it.', 'mystery mode.',
+    'no feed, no claim.', 'checking back later.',
+  ],
 };
 
 let data = null;
@@ -47,15 +86,15 @@ let stale = false;
 let dismissed = false;
 let loading = false;
 let query = '';
-let category = 'All';
-let stateFilter = 'All';
 
 const el = (id) => document.getElementById(id);
 const esc = (value) => String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const hash = (value) => Array.from(String(value)).reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
-const quip = (service) => {
-  const options = QUIPS[service.status.state] || QUIPS.unknown;
-  return options[hash(service.id + service.status.state) % options.length];
+const quip = (service, summary) => {
+  if (summary) return String(summary).slice(0, 260);
+  const options = FALLBACKS[service.status?.state] || FALLBACKS.unknown;
+  const seed = `${service.id}|${service.status?.state || 'unknown'}|${data?.timestamp || ''}`;
+  return options[hash(seed) % options.length];
 };
 
 function relativeTime(iso) {
@@ -93,13 +132,15 @@ function renderHero() {
     acc[s.status.state] = (acc[s.status.state] || 0) + 1;
     return acc;
   }, {});
-  el('verdict').textContent = level.verdict;
+  const fill = { 5: 12, 4: 34, 3: 56, 2: 78, 1: 100 }[level.n] || 20;
+  el('hero').style.setProperty('--level-color', level.color);
+  el('verdict').textContent = data.headline?.text || level.verdict;
   el('hero-sub').textContent = 'Public status feeds, summarized. Republished every 15 minutes.';
   el('alert-caption').textContent = `LEVEL ${level.n} · ${level.label}`;
-  el('alert-scale').innerHTML = LEVELS.map((l) => `
-    <div class="level ${l.n === level.n ? 'on' : ''}" style="--level-color:${l.color}">
-      <b>${l.n}</b><small>${l.caption}</small>
-    </div>
+  el('thermo-fill').style.height = `${fill}%`;
+  el('thermo-level').textContent = level.n;
+  el('thermo-markers').innerHTML = LEVELS.map((l) => `
+    <span class="${l.n === level.n ? 'on' : ''}" style="--level-color:${l.color}">${l.n}</span>
   `).join('');
   el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} critical · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
   el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
@@ -118,12 +159,13 @@ function renderTicker() {
   node.innerHTML = `${line} &nbsp;✦&nbsp; ${line}`;
 }
 
+const SEVERITY = { ok: 0, unknown: 1, maintenance: 2, sus: 3, cooked: 4, meltdown: 5 };
+const TROUBLE = new Set(['sus', 'cooked', 'meltdown']);
+
 function visibleServices() {
   return data.services.filter((s) => {
-    if (category !== 'All' && s.category !== category) return false;
-    if (stateFilter !== 'All' && s.status.state !== stateFilter) return false;
-    if (query && !`${s.name} ${s.category} ${s.status.detail}`.toLowerCase().includes(query)) return false;
-    return true;
+    if (!query) return TROUBLE.has(s.status.state);
+    return `${s.name} ${s.category} ${s.status.detail}`.toLowerCase().includes(query);
   });
 }
 
@@ -134,9 +176,16 @@ function renderSections() {
     root.innerHTML = '<div class="empty">No services match that filter.</div>';
     return;
   }
-  const categories = [...new Set(services.map((s) => s.category))];
+  const rank = (s) => SEVERITY[s.status.state] || 0;
+  const weightRank = (s) => WEIGHT_SCORE[s.weight] || 2;
+  const categories = [...new Set(services.map((s) => s.category))].sort((a, b) => {
+    const groupA = services.filter((s) => s.category === a);
+    const groupB = services.filter((s) => s.category === b);
+    return Math.max(...groupB.map(rank)) - Math.max(...groupA.map(rank)) || a.localeCompare(b);
+  });
   root.innerHTML = categories.map((name) => {
-    const items = services.filter((s) => s.category === name);
+    const items = services.filter((s) => s.category === name)
+      .sort((a, b) => rank(b) - rank(a) || weightRank(b) - weightRank(a) || a.name.localeCompare(b.name));
     return `<div class="section-head"><h2>${esc(name)}</h2><span>${items.length} services</span></div>
       <div class="grid">${items.map((s) => {
         const meta = STATES[s.status.state] || STATES.unknown;
@@ -155,18 +204,33 @@ function renderSections() {
   }).join('');
 }
 
-function renderFilters() {
-  const cats = ['All', ...new Set(data.services.map((s) => s.category))];
-  el('category-filters').innerHTML = cats.map((name) => `<button class="chip ${category === name ? 'active' : ''}" data-cat="${esc(name)}">${esc(name)}</button>`).join('');
-  const states = ['All', 'ok', 'sus', 'cooked', 'meltdown', 'maintenance', 'unknown'];
-  el('state-filters').innerHTML = states.map((name) => `<button class="chip ${stateFilter === name ? 'active' : ''}" data-state="${name}">${name === 'All' ? 'all states' : STATES[name].label}</button>`).join('');
+function renderIncidents() {
+  const feed = el('incident-feed');
+  const active = (data.incidents || []).filter((i) => !i.resolvedAt);
+  if (!active.length) {
+    feed.hidden = true;
+    return;
+  }
+  feed.hidden = false;
+  el('incident-count').textContent = `${active.length} live`;
+  el('incidents').innerHTML = active.slice(0, 12).map((i) => {
+    const meta = STATES[i.state] || STATES.unknown;
+    const summary = quip({ id: i.id, status: { state: i.state } }, i.summary);
+    const body = `<span class="incident-top"><span class="incident-service">${esc(i.serviceName)}</span><span class="pill" style="--state-color:${meta.color}">${esc(meta.label)}</span></span>
+      <p class="incident-title">${esc(i.title)}</p>
+      <p class="incident-summary">${esc(summary)}</p>
+      <span class="incident-meta">${esc(i.weight)} · detected ${esc(relativeTime(i.detectedAt))}</span>`;
+    return i.url
+      ? `<a class="incident-card" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">${body}</a>`
+      : `<div class="incident-card" style="--state-color:${meta.color}">${body}</div>`;
+  }).join('');
 }
 
 function renderAll() {
   if (!data) return;
   renderHero();
   renderTicker();
-  renderFilters();
+  renderIncidents();
   renderSections();
   checkStale();
 }
@@ -209,20 +273,6 @@ el('stale-dismiss').addEventListener('click', () => {
 });
 el('search').addEventListener('input', (event) => {
   query = event.target.value.trim().toLowerCase();
-  renderSections();
-});
-el('category-filters').addEventListener('click', (event) => {
-  const button = event.target.closest('[data-cat]');
-  if (!button) return;
-  category = button.dataset.cat;
-  renderFilters();
-  renderSections();
-});
-el('state-filters').addEventListener('click', (event) => {
-  const button = event.target.closest('[data-state]');
-  if (!button) return;
-  stateFilter = button.dataset.state;
-  renderFilters();
   renderSections();
 });
 setInterval(loadSnapshot, 120000);

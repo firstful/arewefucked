@@ -41,6 +41,18 @@ Each service has an impact weight (`S` / `M` / `L` / `XL` / `XXL`). A small
 service going down barely moves the alert level; a major GCP/AWS/Azure/Cloudflare
 incident sends it to Level 1. Weights live in `src/catalog.js` and show as badges.
 
+`status.json` also carries an `incidents` ledger and a `headline`. Each normalized
+feed incident gets a stable id; new (or reappearing) incidents are summarized by
+`llm.ffilt.us/v1` in a dry, lightly Gen Z voice. Summaries are generated once and
+reused until an incident resolves and later returns. The headline is regenerated
+every publish from the overall alert level plus the five highest-impact services.
+Tune with `LLM_URL`, `LLM_MODEL`, `LLM_TIMEOUT_MS`, `LLM_MAX_TOKENS`,
+`LLM_MAX_PER_RUN`, and `INCIDENT_LEDGER_LIMIT`.
+
+The UI shows only `sus`/`cooked`/`meltdown` services by default, sorted by severity
+then weight. Search finds any service, including nominal ones. Every status has 20
+built-in fallback lines; the LLM summary wins when available.
+
 ## Run locally
 
 ```bash

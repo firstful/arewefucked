@@ -19,25 +19,41 @@
   </header>
 
   <main>
-    <section class="hero">
-      <p class="eyebrow">PUBLIC STATUS FEEDS / ONE BLUNT ANSWER</p>
-      <h1 id="verdict">is the internet okay?</h1>
-      <p id="hero-sub" class="hero-sub">Reading the snapshot…</p>
+    <section class="hero" id="hero" aria-live="polite">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <p class="eyebrow">PUBLIC STATUS FEEDS / ONE BLUNT ANSWER</p>
+          <h1 id="verdict">is the internet okay?</h1>
+          <p id="hero-sub" class="hero-sub">Reading the snapshot…</p>
 
-      <div class="alert" id="alert" aria-live="polite">
-        <div class="alert-head"><span>ALERT LEVEL</span><span id="alert-caption">calibrating</span></div>
-        <div class="alert-scale" id="alert-scale"></div>
-        <p id="summary" class="summary"></p>
-        <p id="last-refresh" class="last-refresh">Last refresh: …</p>
+          <div class="alert" id="alert">
+            <div class="alert-head"><span>ALERT LEVEL</span><span id="alert-caption">calibrating</span></div>
+            <p id="summary" class="summary"></p>
+            <p id="last-refresh" class="last-refresh">Last refresh: …</p>
+          </div>
+        </div>
+
+        <aside class="thermo" aria-label="Overall alert level">
+          <span class="thermo-label">STATUS</span>
+          <div class="thermo-track">
+            <div class="thermo-fill" id="thermo-fill"></div>
+            <div class="thermo-markers" id="thermo-markers"></div>
+          </div>
+          <span class="thermo-level" id="thermo-level">?</span>
+        </aside>
       </div>
     </section>
 
     <div id="ticker" class="ticker"><div id="ticker-text" class="ticker-text">Checking for active incidents…</div></div>
 
+    <section id="incident-feed" class="incident-feed" hidden>
+      <div class="section-head"><h2>incident chatter</h2><span id="incident-count"></span></div>
+      <div id="incidents" class="incident-grid"></div>
+    </section>
+
     <section class="controls">
-      <input id="search" type="search" placeholder="search a service" aria-label="Search services" />
-      <div id="category-filters" class="chips" role="group" aria-label="Filter by category"></div>
-      <div id="state-filters" class="chips" role="group" aria-label="Filter by status"></div>
+      <input id="search" type="search" placeholder="search any service" aria-label="Search services" />
+      <p class="controls-hint">showing active trouble only — search to find any service</p>
     </section>
 
     <div id="sections"></div>
