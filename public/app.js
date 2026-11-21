@@ -191,12 +191,13 @@ function renderSections() {
         const meta = STATES[s.status.state] || STATES.unknown;
         const goodAge = Date.now() - Date.parse(s.lastGoodFetchAt || '');
         const oldGood = Number.isFinite(goodAge) && goodAge > LAST_GOOD_OLD_MS;
+        const liveIncident = (data.incidents || []).find((i) => !i.resolvedAt && i.summary && (s.status.incidents || []).some((si) => si.id === i.id));
         const stamp = oldGood
           ? `<span class="source-tag last-good">LAST GOOD ${esc(humanize(s.lastGoodFetchAt))}</span>`
           : `<span class="source-tag">${s.stale ? 'STALE' : 'SNAPSHOT'} · ${esc(relativeTime(s.fetchedAt))}</span>`;
         return `<a class="card ${s.stale || oldGood ? 'stale' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">
           <div class="card-top"><span class="card-name"><span class="weight" title="impact weight ${esc(s.weight)}">${esc(s.weight)}</span><h3>${esc(s.name)}</h3></span><span class="pill">${esc(meta.label)}</span></div>
-          <p class="quip">${esc(quip(s))}</p>
+          <p class="quip">${esc(quip(s, liveIncident?.summary))}</p>
           <p class="detail">${esc(s.status.detail || 'No detail available.')}</p>
           <div class="card-foot">${stamp}<span>status page ↗</span></div>
         </a>`;
