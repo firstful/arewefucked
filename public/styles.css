@@ -105,7 +105,7 @@ main {
 
 .eyebrow {
   margin: 0 0 16px;
-  font: 600 11px "JetBrains Mono", monospace;
+  font: 600 12px "JetBrains Mono", monospace;
   letter-spacing: 0.18em;
   color: var(--accent);
   text-transform: uppercase;
@@ -142,7 +142,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font: 600 11px "JetBrains Mono", monospace;
+  font: 600 12px "JetBrains Mono", monospace;
   letter-spacing: 0.14em;
   color: var(--muted);
   text-transform: uppercase;
@@ -160,7 +160,7 @@ h1 {
 .last-refresh {
   margin: 8px 0 0;
   color: var(--dim);
-  font: 11px "JetBrains Mono", monospace;
+  font: 12px "JetBrains Mono", monospace;
 }
 
 /* ── Thermometer (status indicator) ─────────────────── */
@@ -178,7 +178,7 @@ h1 {
 }
 
 .thermo-label {
-  font: 600 11px "JetBrains Mono", monospace;
+  font: 600 12px "JetBrains Mono", monospace;
   letter-spacing: 0.2em;
   color: var(--muted);
   text-transform: uppercase;
@@ -214,7 +214,7 @@ h1 {
   padding: 4px 0;
 }
 .thermo-markers span {
-  font: 700 11px "JetBrains Mono", monospace;
+  font: 700 12px "JetBrains Mono", monospace;
   color: var(--dim);
   z-index: 1;
 }
@@ -233,12 +233,11 @@ h1 {
   overflow: hidden;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: var(--bg-raised);
   margin-bottom: 32px;
   padding: 12px clamp(16px, 4vw, 48px);
 }
 .ticker-text {
-  padding: 0;
+  padding: 0 12px;
   white-space: nowrap;
   color: var(--muted);
   font: 12px "JetBrains Mono", monospace;
@@ -265,7 +264,7 @@ h1 {
 .controls-hint {
   margin: 0;
   color: var(--dim);
-  font: 11px "JetBrains Mono", monospace;
+  font: 12px "JetBrains Mono", monospace;
 }
 #search {
   flex: 1 1 240px;
@@ -290,7 +289,7 @@ h1 {
   color: var(--muted);
   border-radius: 4px;
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   font-family: "JetBrains Mono", monospace;
   cursor: pointer;
@@ -317,7 +316,7 @@ h1 {
 }
 .section-head span {
   color: var(--muted);
-  font: 11px "JetBrains Mono", monospace;
+  font: 12px "JetBrains Mono", monospace;
 }
 
 /* ── Grid & Cards ───────────────────────────────────── */
@@ -362,7 +361,7 @@ h1 {
 }
 .weight {
   flex: none;
-  font: 700 11px "JetBrains Mono", monospace;
+  font: 700 12px "JetBrains Mono", monospace;
   color: var(--muted);
   border: 1px solid var(--line);
   border-radius: 3px;
@@ -377,7 +376,7 @@ h1 {
   color: var(--text);
 }
 .pill {
-  font: 700 11px "JetBrains Mono", monospace;
+  font: 700 12px "JetBrains Mono", monospace;
   letter-spacing: 0.1em;
   padding: 4px 8px;
   border-radius: 3px;
@@ -407,7 +406,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  font: 11px "JetBrains Mono", monospace;
+  font: 12px "JetBrains Mono", monospace;
   color: var(--dim);
 }
 .source-tag { color: var(--muted); }
@@ -520,7 +519,7 @@ footer strong { color: var(--text); font-weight: 700; }
 }
 .incident-meta {
   color: var(--dim);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-family: "JetBrains Mono", monospace;
