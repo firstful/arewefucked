@@ -6,7 +6,8 @@
   "description": "Status page aggregator with main-character energy",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "publish": "node scripts/publish.mjs"
+    "publish": "node scripts/publish.mjs",
+    "test": "node --test"
   },
   "devDependencies": {
     "@azure/storage-blob": "^12.0.0"

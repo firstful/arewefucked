@@ -1,84 +1,18 @@
-import { STATES, STATE_RANK } from './normalize.js';
+import { STATES } from './normalize.js';
+import { WEIGHT_SCORE, IMPACT, LEVELS, threat, humanize, relativeTime, SEVERITY, groupIncidents, functionalPercent, botStatusFor } from './logic.js';
 
 const META_URL = document.querySelector('meta[name="status-json"]')?.content || './data/status.json';
 const STATUS_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? './data/status.json' : META_URL;
 const STALE_MS = 30 * 60 * 1000;
 const LAST_GOOD_OLD_MS = 30 * 60 * 1000;
-const LEVELS = [
-  { n: 5, caption: 'NOMINAL', label: 'NOMINAL', color: '#5ee7a0', verdict: 'Nothing is on fire. For once.' },
-  { n: 4, caption: 'ELEVATED', label: 'PLANNED / UNREADABLE', color: '#9aa7ff', verdict: 'Planned work or missing data. Nothing to panic about.' },
-  { n: 3, caption: 'DEGRADED', label: 'DEGRADED', color: '#ffd166', verdict: 'A few services are off. Keep an eye on it.' },
-  { n: 2, caption: 'CRITICAL', label: 'CRITICAL', color: '#ff9f5a', verdict: 'Yes, this is as bad as it looks.' },
-  { n: 1, caption: 'MELTDOWN', label: 'MELTDOWN', color: '#ff5d7a', verdict: 'Several things are very, very not fine.' },
-];
-const WEIGHT_SCORE = { S: 1, M: 2, L: 3, XL: 4, XXL: 5 };
-const IMPACT = { ok: 0, maintenance: 0.5, sus: 1, cooked: 2, meltdown: 3, unknown: 0 };
 
-function threat(services) {
-  const score = services.reduce((sum, s) => sum + (IMPACT[s.status.state] || 0) * (WEIGHT_SCORE[s.weight] || 2), 0);
-  const major = services.some((s) => s.status.state === 'meltdown' && ['XL', 'XXL'].includes(s.weight));
-  const critical = services.some((s) => s.status.state === 'cooked' && ['XL', 'XXL'].includes(s.weight));
-  const n = score >= 40 || major ? 1 : score >= 12 || critical ? 2 : score >= 4 ? 3 : score > 0 ? 4 : 5;
-  return { score, level: LEVELS.find((l) => l.n === n) };
-}
-
-function humanize(iso) {
-  const seconds = Math.max(0, Math.floor((Date.now() - Date.parse(iso || '')) / 1000));
-  if (!Number.isFinite(seconds)) return 'unknown';
-  if (seconds < 45) return 'just now';
-  const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
-  const days = Math.round(hours / 24);
-  return `${days} day${days === 1 ? '' : 's'} ago`;
-}
 const FALLBACKS = {
-  ok: [
-    'quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.',
-    'nothing to see.', 'green across the board.', 'sleeping nicely.', 'vibing.',
-    'status page is chill.', 'zero drama here.', 'all systems normal.', 'no notes.',
-    'calm, suspiciously.', 'clean sheet.', 'nothing cooking.', 'fine. actually fine.',
-    'no complaints filed.', 'smooth sailing.', 'ordinary day.', 'boring. thankfully.',
-  ],
-  maintenance: [
-    'planned downtime.', 'scheduled. not a surprise.', 'maintenance window. fine.',
-    'on the calendar.', 'expected interruptions.', 'keeping it tidy.', 'routine work.',
-    'someone is fixing something.', 'planned, not broken.', 'brief nap incoming.',
-    'scheduled wobble.', 'admin housekeeping.', 'booked in advance.', 'maintenance mode.',
-    'no panic, just plumbing.', 'planned pause.', 'holding pattern.', "upgrade o'clock.",
-    'they meant to do this.', 'maintenance, not mayhem.',
-  ],
-  sus: [
-    'something is off.', 'degraded, but upright.', 'watching it.', 'minor trouble reported.',
-    'a little wobbly.', 'not perfect, still up.', 'mild concern.', 'slower than usual.',
-    'issues noted.', 'some users will feel this.', 'shaky but alive.', 'under observation.',
-    'not a great look.', 'slight turbulence.', 'limping along.', 'partly cooked.',
-    'getting complaints.', 'noticeable hiccup.', 'bumpy, not fatal.', 'keep an eye on it.',
-  ],
-  cooked: [
-    'this one is hurting.', 'a real incident, not vibes.', 'outage. sorry.', 'yep, that is broken.',
-    'properly cooked.', 'not looking good.', 'users are noticing.', 'this is a bad one.',
-    'service is struggling.', 'incident confirmed.', 'ouch.', 'actively failing.',
-    'hard downtime.', 'logs are crying.', 'not a drill.', 'currently cooked.',
-    'significant trouble.', 'somebody is on call.', 'this hurts.', 'red alert energy.',
-  ],
-  meltdown: [
-    'major incident. no notes.', 'this is the bad one.', 'very not fine. click through.', 'critical.',
-    'full meltdown.', 'everything is on fire.', 'worst case, basically.', 'escalate immediately.',
-    'major outage.', 'this is the one.', 'oh no. actually oh no.', 'catastrophic vibes.',
-    'not survivable gracefully.', 'big red button territory.', 'everyone is awake now.',
-    'severe and ongoing.', 'straight up cooked.', 'the bad bad.', 'incident commander energy.',
-    'this is why we have pagers.',
-  ],
-  unknown: [
-    'no readable feed.', 'status page unavailable.', 'no data. not assuming the worst.',
-    'signal lost.', 'feed went quiet.', 'cannot verify.', 'no answer from the page.',
-    'status page is missing.', 'blank chart energy.', 'we are flying blind here.',
-    'nothing to parse.', 'feed hiccup.', 'no signal, no verdict.', 'unreachable.',
-    'not enough information.', 'page gave us nothing.', 'cant read it.', 'mystery mode.',
-    'no feed, no claim.', 'checking back later.',
-  ],
+  ok: ['quiet.', 'no issues reported.', 'boring. in a good way.', 'all clear here.', 'nothing to see.', 'green across the board.', 'sleeping nicely.', 'vibing.', 'status page is chill.', 'zero drama here.', 'all systems normal.', 'no notes.', 'calm, suspiciously.', 'clean sheet.', 'nothing cooking.', 'fine. actually fine.', 'no complaints filed.', 'smooth sailing.', 'ordinary day.', 'boring. thankfully.'],
+  maintenance: ['planned downtime.', 'scheduled. not a surprise.', 'maintenance window. fine.', 'on the calendar.', 'expected interruptions.', 'keeping it tidy.', 'routine work.', 'someone is fixing something.', 'planned, not broken.', 'brief nap incoming.', 'scheduled wobble.', 'admin housekeeping.', 'booked in advance.', 'maintenance mode.', 'no panic, just plumbing.', 'planned pause.', 'holding pattern.', "upgrade o'clock.", 'they meant to do this.', 'maintenance, not mayhem.'],
+  sus: ['something is off.', 'degraded, but upright.', 'watching it.', 'minor trouble reported.', 'a little wobbly.', 'not perfect, still up.', 'mild concern.', 'slower than usual.', 'issues noted.', 'some users will feel this.', 'shaky but alive.', 'under observation.', 'not a great look.', 'slight turbulence.', 'limping along.', 'partly cooked.', 'getting complaints.', 'noticeable hiccup.', 'bumpy, not fatal.', 'keep an eye on it.'],
+  cooked: ['this one is hurting.', 'a real incident, not vibes.', 'outage. sorry.', 'yep, that is broken.', 'properly cooked.', 'not looking good.', 'users are noticing.', 'this is a bad one.', 'service is struggling.', 'incident confirmed.', 'ouch.', 'actively failing.', 'hard downtime.', 'logs are crying.', 'not a drill.', 'currently cooked.', 'significant trouble.', 'somebody is on call.', 'this hurts.', 'red alert energy.'],
+  meltdown: ['major incident. no notes.', 'this is the bad one.', 'very not fine. click through.', 'critical.', 'full meltdown.', 'everything is on fire.', 'worst case, basically.', 'escalate immediately.', 'major outage.', 'this is the one.', 'oh no. actually oh no.', 'catastrophic vibes.', 'not survivable gracefully.', 'big red button territory.', 'everyone is awake now.', 'severe and ongoing.', 'straight up cooked.', 'the bad bad.', 'incident commander energy.', 'this is why we have pagers.'],
+  unknown: ['no readable feed.', 'status page unavailable.', 'no data. not assuming the worst.', 'signal lost.', 'feed went quiet.', 'cannot verify.', 'no answer from the page.', 'status page is missing.', 'blank chart energy.', 'we are flying blind here.', 'nothing to parse.', 'feed hiccup.', 'no signal, no verdict.', 'unreachable.', 'not enough information.', 'page gave us nothing.', 'cant read it.', 'mystery mode.', 'no feed, no claim.', 'checking back later.'],
 };
 
 let data = null;
@@ -97,14 +31,6 @@ const quip = (service, summary) => {
   return options[hash(seed) % options.length];
 };
 
-function relativeTime(iso) {
-  const seconds = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 1000));
-  if (seconds < 60) return `${seconds}s ago`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.round(seconds / 3600)}h ago`;
-  return `${Math.round(seconds / 86400)}d ago`;
-}
-
 function updateRefreshAge() {
   if (data && !stale) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
   checkStale();
@@ -112,62 +38,78 @@ function updateRefreshAge() {
 
 function checkStale() {
   const overlay = el('stale-overlay');
-  if (!data || dismissed) {
-    overlay.hidden = true;
-    return;
-  }
+  if (!data || dismissed) { overlay.hidden = true; return; }
   const age = Date.now() - Date.parse(data.timestamp || data.generatedAt || '');
-  if (!Number.isFinite(age) || age <= STALE_MS) {
-    overlay.hidden = true;
-    return;
-  }
+  if (!Number.isFinite(age) || age <= STALE_MS) { overlay.hidden = true; return; }
   el('stale-detail').textContent = `No publisher update for ${humanize(data.timestamp || data.generatedAt)}. Everything below is history, not live status.`;
   overlay.hidden = false;
 }
 
+function updateClock() {
+  const now = new Date();
+  const clock = el('clock');
+  const date = el('date');
+  if (clock) clock.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+  if (date) date.textContent = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
 function renderHero() {
   const services = data.services;
-  const { score, level: computedLevel } = threat(services);
-  const publishedN = (typeof data.headline?.level === 'number') ? data.headline.level : null;
-  const level = (publishedN !== null ? LEVELS.find((l) => l.n === publishedN) : null) || computedLevel;
-  const caption = data.headline?.levelCaption || level.caption;
-  const counts = services.reduce((acc, s) => {
-    acc[s.status.state] = (acc[s.status.state] || 0) + 1;
-    return acc;
-  }, {});
-  const fill = { 5: 12, 4: 34, 3: 56, 2: 78, 1: 100 }[level.n] || 20;
-  el('hero').style.setProperty('--level-color', level.color);
-  el('verdict').textContent = data.headline?.text || level.verdict;
-  el('hero-sub').textContent = 'Public status feeds, summarized. Republished every 15 minutes.';
-  el('alert-caption').textContent = `LEVEL ${level.n} · ${level.label}`;
-  el('thermo-fill').style.height = `${fill}%`;
-  el('thermo-level').textContent = level.n;
-  el('thermo-markers').innerHTML = [...LEVELS].reverse().map((l) => `
-    <span class="${l.n === level.n ? 'on' : ''}" style="--level-color:${l.color}">${l.n}</span>
-  `).join('');
-  el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
-  el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
+  const { score, level } = threat(services);
+  const counts = services.reduce((acc, s) => { acc[s.status.state] = (acc[s.status.state] || 0) + 1; return acc; }, {});
+  el('hero')?.style && (el('hero').style.setProperty('--level-color', level.color));
+  if (el('verdict')) el('verdict').textContent = data.headline?.text || level.verdict;
+  if (el('hero-sub')) el('hero-sub').textContent = 'Public status feeds, summarized. Republished every 15 minutes.';
+  if (el('alert-caption')) el('alert-caption').textContent = `LEVEL ${level.n} · ${data.headline?.levelCaption || level.caption}`;
+  if (el('summary')) el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
+  if (el('last-refresh')) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
+  // overall status %
+  const pct = functionalPercent(level);
+  if (el('overall-pct')) el('overall-pct').textContent = `${pct}%`;
+  if (el('overall-sub')) el('overall-sub').textContent = pct < 30 ? 'PREPARE FOR INTERNET CHAOS' : pct < 60 ? 'DEGRADED BUT HOLDING' : 'SYSTEMS MOSTLY ONLINE';
+  if (el('overall-pct')) el('overall-pct').style.color = level.color;
+  // threat level
+  if (el('threat-level')) { el('threat-level').textContent = level.caption; el('threat-level').style.color = level.color; }
+  if (el('threat-icons')) el('threat-icons').textContent = level.threatIcons;
+  if (el('bot-status')) {
+    const bs = el('bot-status');
+    bs.textContent = botStatusFor(level);
+    bs.className = 'bot-status' + (level.n <= 2 ? ' danger' : level.n === 3 ? ' warn' : '');
+  }
+  if (el('svc-count')) el('svc-count').textContent = `${services.length} services`;
 }
 
 function renderTicker() {
   const hot = data.services.filter((s) => ['sus', 'cooked', 'meltdown', 'maintenance'].includes(s.status.state) && s.status.detail);
   const node = el('ticker-text');
-  if (!hot.length) {
-    node.className = 'ticker-text';
-    node.textContent = 'No active incidents in the latest snapshot. This is not a security claim.';
-    return;
-  }
+  if (!hot.length) { node.className = 'ticker-text'; node.textContent = 'No active incidents in the latest snapshot. This is not a security claim.'; return; }
   const line = hot.map((s) => `${esc(s.name)}: ${esc(s.status.detail)}`).join('  ·  ');
   node.className = 'ticker-text hot';
   node.innerHTML = `${line} &nbsp;✦&nbsp; ${line}`;
 }
 
-const SEVERITY = { ok: 0, unknown: 0, maintenance: 1, sus: 2, cooked: 3, meltdown: 4 };
-const TROUBLE = new Set(['sus', 'cooked', 'meltdown']);
+function renderServicesTable() {
+  const root = el('services-table');
+  if (!root) return;
+  const services = [...data.services].sort((a, b) => (SEVERITY[b.status.state] || 0) - (SEVERITY[a.status.state] || 0) || (WEIGHT_SCORE[b.weight] || 2) - (WEIGHT_SCORE[a.weight] || 2));
+  const top = services.slice(0, 14);
+  root.innerHTML = top.map((s) => {
+    const meta = STATES[s.status.state] || STATES.unknown;
+    const barWidth = Math.min(100, (WEIGHT_SCORE[s.weight] || 2) * 18 + (SEVERITY[s.status.state] || 0) * 8);
+    return `<div class="svc-row">
+      <span class="svc-name">${esc(s.name)}</span>
+      <span class="svc-status" style="color:${meta.color}">${esc(meta.label)}</span>
+      <span class="svc-detail">${esc(s.status.detail || '')}</span>
+      <span class="svc-bar"><span style="width:${barWidth}%"></span></span>
+    </div>`;
+  }).join('');
+}
 
 function visibleServices() {
   return data.services.filter((s) => {
-    if (!query) return TROUBLE.has(s.status.state);
+    if (!query) return (new Set(['sus', 'cooked', 'meltdown'])).has(s.status.state);
     return `${s.name} ${s.category} ${s.status.detail}`.toLowerCase().includes(query);
   });
 }
@@ -175,10 +117,7 @@ function visibleServices() {
 function renderSections() {
   const services = visibleServices();
   const root = el('sections');
-  if (!services.length) {
-    root.innerHTML = '<div class="empty">No services match that filter.</div>';
-    return;
-  }
+  if (!services.length) { root.innerHTML = '<div class="empty">No services match that filter.</div>'; return; }
   const rank = (s) => SEVERITY[s.status.state] || 0;
   const weightRank = (s) => WEIGHT_SCORE[s.weight] || 2;
   const categories = [...new Set(services.map((s) => s.category))].sort((a, b) => {
@@ -211,27 +150,9 @@ function renderSections() {
 function renderIncidents() {
   const feed = el('incident-feed');
   const active = (data.incidents || []).filter((i) => !i.resolvedAt);
-  if (!active.length) {
-    feed.hidden = true;
-    return;
-  }
+  if (!active.length) { feed.hidden = true; return; }
   feed.hidden = false;
-  // Group incident chatter by provider/company so one card (and one summary)
-  // represents all of a vendor's open chatter instead of a flat per-incident list.
-  const groups = new Map();
-  for (const i of active) {
-    const key = i.provider || i.serviceName || i.serviceId;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(i);
-  }
-  const groupList = [...groups.entries()].map(([provider, items]) => {
-    const state = items.reduce((worst, i) => ((STATE_RANK[i.state] || 0) > (STATE_RANK[worst] || 0) ? i.state : worst), items[0].state);
-    const detectedAt = items.map((i) => i.detectedAt).filter(Boolean).sort()[0] || null;
-    const lastSeen = items.reduce((m, i) => Math.max(m, Date.parse(i.lastSeenAt || 0)), 0);
-    const summary = items.find((i) => i.summary)?.summary || null;
-    const url = items.find((i) => i.url)?.url || items[0].url || '';
-    return { provider, items, state, detectedAt, lastSeen, summary, url };
-  }).sort((a, b) => b.lastSeen - a.lastSeen);
+  const groupList = groupIncidents(active);
   el('incident-count').textContent = `${groupList.length} live`;
   el('incidents').innerHTML = groupList.slice(0, 12).map((g) => {
     const meta = STATES[g.state] || STATES.unknown;
@@ -247,12 +168,22 @@ function renderIncidents() {
       ? `<a class="incident-card" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">${body}</a>`
       : `<div class="incident-card" style="--state-color:${meta.color}">${body}</div>`;
   }).join('');
+  // recent events log
+  const eventsRoot = el('recent-events');
+  if (eventsRoot) {
+    const lines = groupList.slice(0, 8).map((g) => {
+      const t = new Date(g.detectedAt || data.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+      return `<div class="event-line"><span class="event-time">${esc(t)}</span><span class="event-text">${esc(g.provider)} — ${esc(g.items[0].title)}</span></div>`;
+    });
+    eventsRoot.innerHTML = lines.join('') || '<div class="event-line"><span class="event-text">No recent events.</span></div>';
+  }
 }
 
 function renderAll() {
   if (!data) return;
   renderHero();
   renderTicker();
+  renderServicesTable();
   renderIncidents();
   renderSections();
   checkStale();
@@ -274,13 +205,13 @@ async function loadSnapshot() {
     renderAll();
   } catch (error) {
     if (!data) {
-      el('verdict').textContent = 'No snapshot available.';
-      el('hero-sub').textContent = `Could not load the published JSON: ${error.message}`;
-      el('ticker-text').textContent = 'Check STATUS_JSON_URL in index.html.';
-      el('last-refresh').textContent = 'Last refresh: unavailable';
+      if (el('verdict')) el('verdict').textContent = 'No snapshot available.';
+      if (el('hero-sub')) el('hero-sub').textContent = `Could not load the published JSON: ${error.message}`;
+      if (el('ticker-text')) el('ticker-text').textContent = 'Check STATUS_JSON_URL in index.html.';
+      if (el('last-refresh')) el('last-refresh').textContent = 'Last refresh: unavailable';
     } else {
       stale = true;
-      el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)} (stale copy)`;
+      if (el('last-refresh')) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)} (stale copy)`;
     }
   } finally {
     loading = false;
@@ -290,14 +221,8 @@ async function loadSnapshot() {
 }
 
 el('refresh').addEventListener('click', loadSnapshot);
-el('stale-dismiss').addEventListener('click', () => {
-  dismissed = true;
-  el('stale-overlay').hidden = true;
-});
-el('search').addEventListener('input', (event) => {
-  query = event.target.value.trim().toLowerCase();
-  renderSections();
-});
+el('stale-dismiss').addEventListener('click', () => { dismissed = true; el('stale-overlay').hidden = true; });
+el('search').addEventListener('input', (event) => { query = event.target.value.trim().toLowerCase(); renderSections(); });
 setInterval(loadSnapshot, 120000);
 setInterval(updateRefreshAge, 30000);
 

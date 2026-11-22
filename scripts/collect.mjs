@@ -18,7 +18,7 @@ const PROVIDER_LABELS = {
   'www.githubstatus.com': 'GitHub',
 };
 
-function providerFor(service) {
+export function providerFor(service) {
   if (service.provider) return service.provider;
   const url = service?.source?.url;
   if (!url) return service.id || 'unknown';

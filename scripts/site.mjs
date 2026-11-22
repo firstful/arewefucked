@@ -7,9 +7,9 @@ export async function buildSite() {
   const dist = path.join(root, 'dist');
   await rm(dist, { recursive: true, force: true });
   await mkdir(dist, { recursive: true });
-  const files = ['index.html', 'styles.css', 'app.js', 'normalize.js', 'staticwebapp.config.json'];
+  const files = ['index.html', 'styles.css', 'app.js', 'normalize.js', 'logic.js', 'staticwebapp.config.json'];
   for (const file of files) {
-    const from = file === 'normalize.js' ? path.join(root, 'src', file) : path.join(root, 'public', file);
+    const from = (file === 'normalize.js' || file === 'logic.js') ? path.join(root, 'src', file) : path.join(root, 'public', file);
     await copyFile(from, path.join(dist, file));
   }
   return dist;

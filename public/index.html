@@ -3,57 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AreWeFucked.xyz — is the internet cooked?</title>
+  <title>AreWeFucked.xyz — Robot Takeover Status Dashboard</title>
   <meta name="description" content="Real status feeds, unserious commentary. A status page aggregator for the chronically online." />
   <meta name="status-json" content="https://arewefcked.blob.core.windows.net/status/status.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%80%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
   <header class="topbar">
-    <a class="brand" href="./" aria-label="AreWeFucked.xyz home">
-      <span class="brand-eye">👀</span>
-      <span class="brand-name">AreWeFucked</span>
-      <span class="brand-xyz">.xyz</span>
-    </a>
+    <a class="brand" href="./" aria-label="AreWeFucked.xyz home"><span class="brand-eye">🤖</span><span class="brand-name glitch" data-text="AreWeFucked">AreWeFucked</span><span class="brand-xyz">.xyz</span></a>
     <div class="topbar-right">
       <button id="refresh" class="refresh" type="button" aria-label="Refresh statuses">↻ refresh</button>
     </div>
   </header>
 
   <main>
-    <section class="hero" id="hero" aria-live="polite">
-      <div class="hero-grid">
-        <div class="hero-main">
-          <h1 id="verdict">is the internet okay?</h1>
-          <p id="hero-sub" class="hero-sub">Reading the snapshot…</p>
+    <section class="crt-banner" aria-live="polite">
+      <div class="crt-banner-left">
+        <span class="crt-tag">RADAR 2025 // SYSTEM STATUS</span>
+        <h1 class="crt-title glitch" data-text="ROBOT TAKEOVER IN PROGRESS...">ROBOT TAKEOVER IN PROGRESS...</h1>
+      </div>
+      <div class="crt-banner-right">
+        <span id="clock">--:--:--</span>
+        <span id="date">---</span>
+      </div>
+    </section>
 
-          <div class="alert" id="alert">
-            <div class="alert-head"><span>ALERT LEVEL</span><span id="alert-caption">calibrating</span></div>
-            <p id="summary" class="summary"></p>
-            <p id="last-refresh" class="last-refresh">Last refresh: …</p>
-          </div>
-        </div>
+    <section class="status-grid">
+      <div class="panel overall">
+        <div class="panel-label">OVERALL STATUS</div>
+        <div class="big-pct" id="overall-pct">--%</div>
+        <div class="big-sub">FUNCTIONAL</div>
+        <div class="panel-sub" id="overall-sub">CALIBRATING SENSORS...</div>
+      </div>
+      <div class="panel threat">
+        <div class="panel-label">THREAT LEVEL</div>
+        <div class="threat-level" id="threat-level">CALIBRATING</div>
+        <div class="threat-icons" id="threat-icons"></div>
+      </div>
+    </section>
 
-        <aside class="thermo" aria-label="Overall alert level">
-          <span class="thermo-label">STATUS</span>
-          <div class="thermo-track">
-            <div class="thermo-fill" id="thermo-fill"></div>
-            <div class="thermo-markers" id="thermo-markers"></div>
-          </div>
-          <span class="thermo-level" id="thermo-level">?</span>
-        </aside>
+    <section class="verdict-row">
+      <h2 id="verdict">is the internet okay?</h2>
+      <p id="hero-sub" class="hero-sub">Reading the snapshot…</p>
+      <div class="alert" id="alert">
+        <div class="alert-head"><span>ALERT LEVEL</span><span id="alert-caption">calibrating</span></div>
+        <p id="summary" class="summary"></p>
+        <p id="last-refresh" class="last-refresh">Last refresh: …</p>
       </div>
     </section>
 
     <div id="ticker" class="ticker"><div id="ticker-text" class="ticker-text">Checking for active incidents…</div></div>
 
+    <section class="services-table-section">
+      <div class="section-head"><h2>MAJOR SERVICES / STATUS</h2><span id="svc-count"></span></div>
+      <div class="services-table" id="services-table"></div>
+    </section>
+
     <section id="incident-feed" class="incident-feed" hidden>
-      <div class="section-head"><h2>incident chatter</h2><span id="incident-count"></span></div>
+      <div class="section-head"><h2>INCIDENT CHATTER</h2><span id="incident-count"></span></div>
       <div id="incidents" class="incident-grid"></div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel events">
+        <div class="panel-label">RECENT EVENTS</div>
+        <div id="recent-events" class="events-log"></div>
+      </div>
+      <div class="panel bot">
+        <div class="panel-label">BOT STATUS</div>
+        <div id="bot-status" class="bot-status">In Control, Fear Not.</div>
+      </div>
     </section>
 
     <section class="controls">
@@ -66,11 +92,12 @@
 
   <footer>
     <p><strong>Real status data. Blunt commentary.</strong> Not a security claim, not incident attribution, not a source of truth. If something actually matters, click through to the vendor's own status page.</p>
-    <p class="muted">Built from public status APIs. No vendor affiliation.</p>
+    <p class="muted">Built from public status APIs. No vendor affiliation. Robot takeover not actually in progress. Probably.</p>
   </footer>
 
   <div id="stale-overlay" class="stale-overlay" hidden>
     <div class="stale-card">
+      <p class="eyebrow">PUBLISHER WENT QUIET</p>
       <h2>oh fuck… we're flying blind</h2>
       <p id="stale-detail" class="muted"></p>
       <button id="stale-dismiss" type="button">view stale data anyway</button>
