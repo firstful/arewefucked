@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-11-22T12:00:00.000Z",
+  "generatedAt": "2026-11-22T12:00:00.000Z",
+  "services": [
+    { "id": "cloudflare", "name": "Cloudflare", "category": "Edge", "weight": "XXL", "provider": "Cloudflare", "url": "https://www.cloudflarestatus.com", "status": { "state": "cooked", "detail": "API degraded", "incidents": [{ "title": "Elevated errors", "url": "u1" }] }, "fetchedAt": "2026-11-22T12:00:00.000Z", "lastGoodFetchAt": "2026-11-22T12:00:00.000Z", "stale": false, "feedOk": true },
+    { "id": "aws", "name": "AWS", "category": "Cloud", "weight": "XXL", "provider": "Amazon", "url": "https://health.aws.amazon.com", "status": { "state": "ok", "detail": "All services operational", "incidents": [] }, "fetchedAt": "2026-11-22T12:00:00.000Z", "lastGoodFetchAt": "2026-11-22T12:00:00.000Z", "stale": false, "feedOk": true },
+    { "id": "gcp", "name": "GCP", "category": "Cloud", "weight": "XXL", "provider": "Google", "url": "https://status.cloud.google.com", "status": { "state": "ok", "detail": "No incidents", "incidents": [] }, "fetchedAt": "2026-11-22T12:00:00.000Z", "lastGoodFetchAt": "2026-11-22T12:00:00.000Z", "stale": false, "feedOk": true },
+    { "id": "github", "name": "GitHub", "category": "Dev", "weight": "XL", "provider": "GitHub", "url": "https://www.githubstatus.com", "status": { "state": "sus", "detail": "Degraded performance", "incidents": [{ "title": "Actions slow", "url": "u2" }] }, "fetchedAt": "2026-11-22T12:00:00.000Z", "lastGoodFetchAt": "2026-11-22T12:00:00.000Z", "stale": false, "feedOk": true },
+    { "id": "minor-worker", "name": "Minor Worker", "category": "Workers", "weight": "S", "provider": "Acme", "url": "https://example.com", "status": { "state": "cooked", "detail": "down", "incidents": [{ "title": "worker down", "url": "u3" }] }, "fetchedAt": "2026-11-22T12:00:00.000Z", "lastGoodFetchAt": "2026-11-22T12:00:00.000Z", "stale": false, "feedOk": true }
+  ],
+  "incidents": [],
+  "headline": { "text": "test headline", "level": 3, "levelCaption": "DEGRADED", "generatedAt": "2026-11-22T12:00:00.000Z", "source": "default" }
+}

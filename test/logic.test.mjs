@@ -8,14 +8,29 @@ test('threat: no services -> level 5 nominal', () => {
   assert.equal(r.score, 0);
 });
 
-test('threat: meltdown XL -> level 1', () => {
+test('threat: single meltdown XL -> level 2 critical', () => {
   const services = [{ id:'x', weight:'XL', status:{ state:'meltdown' } }];
   const r = threat(services);
-  assert.equal(r.level.n, 1);
+  assert.equal(r.level.n, 2);
 });
 
-test('threat: cooked XL -> level 2 critical', () => {
+test('threat: cooked XL -> level 3 degraded (single incident not critical)', () => {
   const services = [{ id:'x', weight:'XL', status:{ state:'cooked' } }];
+  const r = threat(services);
+  assert.equal(r.level.n, 3);
+});
+
+test('threat: two cooked XXL -> level 2 critical', () => {
+  const services = [
+    { id:'a', weight:'XXL', status:{ state:'cooked' } },
+    { id:'b', weight:'XXL', status:{ state:'cooked' } },
+  ];
+  const r = threat(services);
+  assert.equal(r.level.n, 2);
+});
+
+test('threat: single meltdown XXL -> level 2 critical', () => {
+  const services = [{ id:'x', weight:'XXL', status:{ state:'meltdown' } }];
   const r = threat(services);
   assert.equal(r.level.n, 2);
 });
@@ -26,9 +41,21 @@ test('threat: returns score', () => {
   assert.equal(r.score, 2); // sus impact 1 * M weight 2
 });
 
-test('humanize: just now', () => {
-  const now = new Date().toISOString();
-  assert.equal(humanize(now), 'just now');
+test('functionalPercent: single minor outage barely moves it', () => {
+  const services = [
+    { id:'a', weight:'M', status:{ state:'ok' } },
+    { id:'b', weight:'M', status:{ state:'ok' } },
+    { id:'c', weight:'M', status:{ state:'sus' } },
+  ];
+  assert.equal(functionalPercent(services), 67);
+});
+
+test('functionalPercent: all ok -> 100', () => {
+  assert.equal(functionalPercent([{id:'a',weight:'M',status:{state:'ok'}}]), 100);
+});
+
+test('functionalPercent: empty -> 100 (no divide by zero)', () => {
+  assert.equal(functionalPercent([]), 100);
 });
 
 test('humanize: minutes ago', () => {
@@ -47,9 +74,9 @@ test('SEVERITY matches state ranks', () => {
   assert.equal(SEVERITY.unknown, 0);
 });
 
-test('functionalPercent returns level functional', () => {
-  const lvl = LEVELS.find(l => l.n === 2);
-  assert.equal(functionalPercent(lvl), 18);
+test('humanize: just now', () => {
+  const now = new Date().toISOString();
+  assert.equal(humanize(now), 'just now');
 });
 
 test('botStatusFor returns level bot text', () => {

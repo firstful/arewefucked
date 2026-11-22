@@ -66,7 +66,7 @@ function renderHero() {
   if (el('summary')) el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
   if (el('last-refresh')) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
   // overall status %
-  const pct = functionalPercent(level);
+  const pct = functionalPercent(data.services);
   if (el('overall-pct')) el('overall-pct').textContent = `${pct}%`;
   if (el('overall-sub')) el('overall-sub').textContent = pct < 30 ? 'PREPARE FOR INTERNET CHAOS' : pct < 60 ? 'DEGRADED BUT HOLDING' : 'SYSTEMS MOSTLY ONLINE';
   if (el('overall-pct')) el('overall-pct').style.color = level.color;

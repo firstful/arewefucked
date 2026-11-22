@@ -1,4 +1,4 @@
-// One LLM-written phrase per publish, driven by the alert level and top incidents.
+import { threat } from '../src/logic.js';
 
 const LLM_URL = process.env.LLM_URL || 'https://llm.ffilt.us/v1/chat/completions';
 const LLM_MODEL = process.env.LLM_MODEL || 'auto';
@@ -7,27 +7,17 @@ const LLM_MAX_TOKENS = Math.max(500, Number(process.env.HEADLINE_MAX_TOKENS || 2
 
 const WEIGHT_SCORE = { S: 1, M: 2, L: 3, XL: 4, XXL: 5 };
 const IMPACT = { ok: 0, maintenance: 0.5, sus: 1, cooked: 2, meltdown: 3, unknown: 0 };
-const LEVELS = {
-  5: { caption: 'NOMINAL', fallback: 'Nothing is on fire. For once.' },
-  4: { caption: 'ELEVATED', fallback: 'Planned work or missing data. Nothing to panic about.' },
-  3: { caption: 'DEGRADED', fallback: 'A few services are off. Keep an eye on it.' },
-  2: { caption: 'CRITICAL', fallback: 'Yes, this is as bad as it looks.' },
-  1: { caption: 'MELTDOWN', fallback: 'Several things are very, very not fine.' },
-};
 
 const clean = (value) => String(value || '')
   .replace(/```/g, '')
-  .replace(/^\s*["'“”]|["'“”]\s*$/g, '')
+  .replace(/^\s*["'"""]|["'"""]\s*$/g, '')
   .replace(/\s+/g, ' ')
   .trim()
   .slice(0, 160);
 
 export function scoreServices(services) {
-  const score = services.reduce((sum, s) => sum + (IMPACT[s.status?.state] || 0) * (WEIGHT_SCORE[s.weight] || 2), 0);
-  const major = services.some((s) => s.status?.state === 'meltdown' && ['XL', 'XXL'].includes(s.weight));
-  const critical = services.some((s) => s.status?.state === 'cooked' && ['XL', 'XXL'].includes(s.weight));
-  const n = score >= 40 || major ? 1 : score >= 12 || critical ? 2 : score >= 4 ? 3 : score > 0 ? 4 : 5;
-  return { score, n, level: LEVELS[n] };
+  const r = threat(services);
+  return { score: r.score, n: r.level.n, level: r.level };
 }
 
 function topFive(services) {
@@ -50,7 +40,7 @@ function prompt(level, top) {
     : '- No specific service is standing out.';
   return [
     'You write the headline for a blunt public status-page aggregator.',
-    `Overall alert level: ${level.n} ${level.level.caption}. Default voice: "${level.level.fallback}"`,
+    `Overall alert level: ${level.n} ${level.level.caption}. Default voice: "${level.level.verdict}"`,
     'Top affected or high-impact services right now:',
     lines,
     '',
@@ -100,7 +90,7 @@ export async function generateHeadline(services) {
     };
   } catch (error) {
     return {
-      text: level.level.fallback,
+      text: level.level.verdict,
       model: null,
       generatedAt,
       level: level.n,
