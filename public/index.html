@@ -6,13 +6,19 @@
   <title>AreWeFucked.xyz — is the internet cooked?</title>
   <meta name="description" content="Real status feeds, unserious commentary. A status page aggregator for the chronically online." />
   <meta name="status-json" content="https://arewefcked.blob.core.windows.net/status/status.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%80%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
-  <div class="glow" aria-hidden="true"></div>
   <header class="topbar">
-    <a class="brand" href="./" aria-label="AreWeFucked.xyz home"><span class="brand-eye">👀</span><span class="brand-name glitch" data-text="AreWeFucked">AreWeFucked</span><span class="brand-xyz">.xyz</span></a>
+    <a class="brand" href="./" aria-label="AreWeFucked.xyz home">
+      <span class="brand-eye">👀</span>
+      <span class="brand-name">AreWeFucked</span>
+      <span class="brand-xyz">.xyz</span>
+    </a>
     <div class="topbar-right">
       <button id="refresh" class="refresh" type="button" aria-label="Refresh statuses">↻ refresh</button>
     </div>
@@ -22,7 +28,6 @@
     <section class="hero" id="hero" aria-live="polite">
       <div class="hero-grid">
         <div class="hero-main">
-          <p class="eyebrow">PUBLIC STATUS FEEDS / ONE BLUNT ANSWER</p>
           <h1 id="verdict">is the internet okay?</h1>
           <p id="hero-sub" class="hero-sub">Reading the snapshot…</p>
 
@@ -66,7 +71,6 @@
 
   <div id="stale-overlay" class="stale-overlay" hidden>
     <div class="stale-card">
-      <p class="eyebrow">PUBLISHER WENT QUIET</p>
       <h2>oh fuck… we're flying blind</h2>
       <p id="stale-detail" class="muted"></p>
       <button id="stale-dismiss" type="button">view stale data anyway</button>
