@@ -224,11 +224,17 @@ main {
 }
 .svc-row:last-child { border-bottom: none; }
 .svc-row:hover { background: var(--panel-2); }
+.svc-head {
+  font-size: 10px; letter-spacing: 0.12em; color: var(--muted);
+  text-transform: uppercase; font-weight: 700; padding-top: 8px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.svc-head:hover { background: transparent; }
 .svc-name { color: var(--text); font-weight: 600; }
 .svc-status { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 11px; }
 .svc-detail { color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .svc-bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
-.svc-bar > span { display: block; height: 100%; background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.svc-bar > span { display: block; height: 100%; background: var(--accent); }
 @media (max-width: 720px) {
   .svc-row { grid-template-columns: 1fr 1fr; }
   .svc-detail, .svc-bar { display: none; }

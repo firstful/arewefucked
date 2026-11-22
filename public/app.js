@@ -63,12 +63,12 @@ function renderHero() {
   if (el('verdict')) el('verdict').textContent = data.headline?.text || level.verdict;
   if (el('hero-sub')) el('hero-sub').textContent = 'Public status feeds, summarized. Republished every 15 minutes.';
   if (el('alert-caption')) el('alert-caption').textContent = `LEVEL ${level.n} · ${data.headline?.levelCaption || level.caption}`;
-  if (el('summary')) el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable · impact ${score}.`;
+  if (el('summary')) el('summary').textContent = `${services.length} services checked · ${counts.ok || 0} clean · ${counts.sus || 0} degraded · ${counts.cooked || 0} outage · ${counts.meltdown || 0} major · ${counts.maintenance || 0} planned · ${counts.unknown || 0} unreadable.`;
   if (el('last-refresh')) el('last-refresh').textContent = `Last refresh: ${humanize(data.timestamp || data.generatedAt)}`;
   // overall status %
   const pct = functionalPercent(data.services);
   if (el('overall-pct')) el('overall-pct').textContent = `${pct}%`;
-  if (el('overall-sub')) el('overall-sub').textContent = pct < 30 ? 'PREPARE FOR INTERNET CHAOS' : pct < 60 ? 'DEGRADED BUT HOLDING' : 'SYSTEMS MOSTLY ONLINE';
+  if (el('overall-sub')) el('overall-sub').textContent = 'WEIGHTED HEALTH SCORE';
   if (el('overall-pct')) el('overall-pct').style.color = level.color;
   // threat level
   if (el('threat-level')) { el('threat-level').textContent = level.caption; el('threat-level').style.color = level.color; }
@@ -95,14 +95,18 @@ function renderServicesTable() {
   if (!root) return;
   const services = [...data.services].sort((a, b) => (SEVERITY[b.status.state] || 0) - (SEVERITY[a.status.state] || 0) || (WEIGHT_SCORE[b.weight] || 2) - (WEIGHT_SCORE[a.weight] || 2));
   const top = services.slice(0, 14);
-  root.innerHTML = top.map((s) => {
+  const header = `<div class="svc-row svc-head"><span>SERVICE</span><span>STATUS</span><span>DETAIL</span><span>HEALTH</span></div>`;
+  // Health bar reflects actual state, not weight: OK=100%, maintenance=70%,
+  // sus=45%, cooked=15%, meltdown=0%, unknown=25%. Color matches status.
+  const health = { ok: 100, maintenance: 70, sus: 45, cooked: 15, meltdown: 0, unknown: 25 };
+  root.innerHTML = header + top.map((s) => {
     const meta = STATES[s.status.state] || STATES.unknown;
-    const barWidth = Math.min(100, (WEIGHT_SCORE[s.weight] || 2) * 18 + (SEVERITY[s.status.state] || 0) * 8);
+    const barWidth = health[s.status.state] ?? 25;
     return `<div class="svc-row">
       <span class="svc-name">${esc(s.name)}</span>
       <span class="svc-status" style="color:${meta.color}">${esc(meta.label)}</span>
       <span class="svc-detail">${esc(s.status.detail || '')}</span>
-      <span class="svc-bar"><span style="width:${barWidth}%"></span></span>
+      <span class="svc-bar" title="health: ${barWidth}%"><span style="width:${barWidth}%;background:${meta.color}"></span></span>
     </div>`;
   }).join('');
 }
@@ -128,7 +132,7 @@ function renderSections() {
   root.innerHTML = categories.map((name) => {
     const items = services.filter((s) => s.category === name)
       .sort((a, b) => rank(b) - rank(a) || weightRank(b) - weightRank(a) || a.name.localeCompare(b.name));
-    return `<div class="section-head"><h2>${esc(name)}</h2><span>${items.length} services</span></div>
+    return `<div class="section-head"><h2>${esc(name)}</h2><span>${items.length} ${items.length === 1 ? 'service' : 'services'}</span></div>
       <div class="grid">${items.map((s) => {
         const meta = STATES[s.status.state] || STATES.unknown;
         const goodAge = Date.now() - Date.parse(s.lastGoodFetchAt || '');
@@ -150,9 +154,13 @@ function renderSections() {
 function renderIncidents() {
   const feed = el('incident-feed');
   const active = (data.incidents || []).filter((i) => !i.resolvedAt);
-  if (!active.length) { feed.hidden = true; return; }
-  feed.hidden = false;
   const groupList = groupIncidents(active);
+  if (!active.length) {
+    feed.hidden = true;
+    renderRecentEvents([]);
+    return;
+  }
+  feed.hidden = false;
   el('incident-count').textContent = `${groupList.length} live`;
   el('incidents').innerHTML = groupList.slice(0, 12).map((g) => {
     const meta = STATES[g.state] || STATES.unknown;
@@ -168,15 +176,30 @@ function renderIncidents() {
       ? `<a class="incident-card" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" style="--state-color:${meta.color}">${body}</a>`
       : `<div class="incident-card" style="--state-color:${meta.color}">${body}</div>`;
   }).join('');
-  // recent events log
-  const eventsRoot = el('recent-events');
-  if (eventsRoot) {
-    const lines = groupList.slice(0, 8).map((g) => {
-      const t = new Date(g.detectedAt || data.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-      return `<div class="event-line"><span class="event-time">${esc(t)}</span><span class="event-text">${esc(g.provider)} — ${esc(g.items[0].title)}</span></div>`;
-    });
-    eventsRoot.innerHTML = lines.join('') || '<div class="event-line"><span class="event-text">No recent events.</span></div>';
+  renderRecentEvents(groupList);
+}
+
+function renderRecentEvents(groupList) {
+  const root = el('recent-events');
+  if (!root) return;
+  let lines = (groupList || []).slice(0, 8).map((g) => {
+    const t = new Date(g.detectedAt || data.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    return `<div class="event-line"><span class="event-time">${esc(t)}</span><span class="event-text">${esc(g.provider)} — ${esc(g.items[0].title)}</span></div>`;
+  });
+  // Fallback: derive events from services currently in trouble so the panel
+  // is never empty while outages are being reported.
+  if (!lines.length) {
+    lines = data.services
+      .filter((s) => ['sus', 'cooked', 'meltdown', 'maintenance'].includes(s.status.state))
+      .sort((a, b) => (SEVERITY[b.status.state] || 0) - (SEVERITY[a.status.state] || 0))
+      .slice(0, 8)
+      .map((s) => {
+        const meta = STATES[s.status.state] || STATES.unknown;
+        const t = new Date(s.fetchedAt || data.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        return `<div class="event-line"><span class="event-time">${esc(t)}</span><span class="event-text">${esc(s.name)} — ${esc(meta.label)}: ${esc(s.status.detail || 'no detail')}</span></div>`;
+      });
   }
+  root.innerHTML = lines.join('') || '<div class="event-line"><span class="event-text">No events in the latest snapshot.</span></div>';
 }
 
 function renderAll() {
