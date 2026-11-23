@@ -34,20 +34,25 @@ function topFive(services) {
     .slice(0, 5);
 }
 
-function prompt(level, top) {
+function prompt(level, top, counts) {
   const lines = top.length
     ? top.map((s) => `- ${s.name} (${s.weight}, ${s.state}): ${s.detail}`).join('\n')
     : '- No specific service is standing out.';
+  const countLine = counts
+    ? `Counts: ${counts.meltdown || 0} major (meltdown), ${counts.cooked || 0} outage (cooked), ${counts.sus || 0} degraded (sus). "cooked" = outage, never "critical".`
+    : '';
   return [
     'You write the headline for a blunt public status-page aggregator.',
     `Overall alert level: ${level.n} ${level.level.caption}. Default voice: "${level.level.verdict}"`,
+    countLine,
     'Top affected or high-impact services right now:',
     lines,
     '',
     'Write ONE short headline phrase (3-10 words) in a light Gen Z mood. Dry and funny, like a tired sysadmin posting.',
+    'Use the counts above for any numbers; do not invent or inflate counts (e.g. do not call outages "criticals").',
     'No excessive slang, no emoji, no hashtags, no markdown, no explanation. Do not invent facts or causality.',
     'Return plain text only.',
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 }
 
 async function requestHeadline(level, top) {

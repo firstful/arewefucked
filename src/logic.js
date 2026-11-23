@@ -26,7 +26,9 @@ export function threat(services) {
   let n;
   if (score === 0) n = 5;
   else if (majorMeltdown && (meltdownCount >= 2 || score >= 30)) n = 1;
-  else if (score >= 20 || cookedCount >= 3 || (meltdownCount >= 1 && score >= 12)) n = 2;
+  else if (meltdownCount >= 1 && score >= 12) n = 2;
+  else if (cookedCount >= 3) n = 2;
+  else if (cookedCount >= 2 && score >= 20) n = 2;
   else if (score >= 6 || cookedCount >= 1) n = 3;
   else n = 4;
   return { score, level: LEVELS.find((l) => l.n === n), counts: { meltdown: meltdownCount, cooked: cookedCount, sus: susCount } };

@@ -65,3 +65,25 @@ test('normalize: result incidents capped at 5', () => {
   const r = normalize({ type: 'statuspage', url: 'x' }, raw);
   assert.ok(r.incidents.length <= 5);
 });
+
+
+test('normalize: statuspage minor indicator with partial_outage components stays sus (no cooked)', () => {
+  const raw = {
+    status: { indicator: 'minor', description: 'Partially Degraded Service' },
+    components: [
+      { name: 'Cloudflare Sites and Services', status: 'degraded_performance' },
+      { name: 'Workers', status: 'degraded_performance' },
+      { name: 'North America', status: 'partial_outage' },
+      { name: 'Europe', status: 'partial_outage' },
+    ],
+    incidents: [{ name: 'Workers event subscription', status: 'identified', impact: 'minor', shortlink: 'u' }],
+  };
+  const r = normalize({ type: 'statuspage', url: 'x' }, raw);
+  assert.equal(r.state, 'sus');
+});
+
+test('normalize: statuspage no indicator keeps component-driven cooked', () => {
+  const raw = { status: {}, components: [{ name: 'API', status: 'partial_outage' }], incidents: [] };
+  const r = normalize({ type: 'statuspage', url: 'x' }, raw);
+  assert.equal(r.state, 'cooked');
+});

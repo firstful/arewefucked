@@ -89,6 +89,12 @@ function result(state, detail, incidents = []) {
 
 function statuspage(raw, source, now) {
   if (!raw || typeof raw !== 'object') return result('unknown', 'Could not read the status feed.');
+  // Vendor's own overall indicator is authoritative when present. Scattered
+  // regional partial_outage components must not outrank a "minor"/"none"
+  // aggregate call (e.g. Cloudflare marking itself partially degraded while
+  // individual POPs sit in partial_outage). Only escalate past the indicator
+  // when the vendor declares a major/critical state or an incident explicitly
+  // carries major/critical impact.
   const filter = source.filter;
   let incidents = (raw.incidents || []).filter((i) => !/^(resolved|postmortem|completed)$/i.test(i.status || ''));
   let components = (raw.components || []).filter((c) => c.status && c.status !== 'operational');
@@ -101,9 +107,24 @@ function statuspage(raw, source, now) {
     }
   }
 
+  const hasIndicator = !filter && !!raw.status?.indicator;
+  const indicatorState = hasIndicator ? (INDICATOR[raw.status.indicator] || null) : null;
+  const vendorSevere = indicatorState === 'cooked' || indicatorState === 'meltdown';
+  const hasMajorIncident = incidents.some((i) => /major|critical/i.test(String(i.impact || '')) || /major|critical/i.test(String(i.status || '')));
+
+  const componentState = (c) => {
+    const base = COMPONENT[c.status] || 'sus';
+    // Cap partial_outage (cooked) at degraded (sus) when the vendor's own
+    // aggregate call is minor/none and no major/critical incident is reported.
+    if (!filter && base === 'cooked' && hasIndicator && !vendorSevere && !hasMajorIncident) {
+      return 'sus';
+    }
+    return base;
+  };
+
   const states = [
     filter ? null : INDICATOR[raw.status?.indicator],
-    ...components.map((c) => COMPONENT[c.status] || 'sus'),
+    ...components.map(componentState),
     ...incidents.map((i) => {
       if (/maintenance|scheduled/i.test(i.status || '')) return 'maintenance';
       // Statuspage uses impact "none" for active, low-severity incidents too.
